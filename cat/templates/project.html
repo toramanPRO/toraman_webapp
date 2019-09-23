@@ -1,0 +1,27 @@
+{% extends 'template.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    {{user_project.title}}
+{% endblock %}
+
+{% block body %}
+    <main>
+        <div><h2>{{user_project.title}}</h2></div>
+        <br>
+        <div><h4>{{user_project.source_language}} > {{user_project.target_language}}</h4></div>
+        <br>
+        <div>
+            <h4>File(s):</h4>
+            <ul id="source_files">
+            {% for source_file in source_files %}
+            <li><p>> 
+                <a href="{% url 'bilingual-file'  user_project.user.id user_project.id source_file %}">
+                {{source_file}}
+                </a>
+            </p></li>
+            {% endfor %}
+            </ul>
+        </div>
+    </main>
+{% endblock %}

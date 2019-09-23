@@ -1,0 +1,30 @@
+{% extends 'template.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    {{request.user.username}}
+{% endblock %}
+
+{% block body %}
+    <main>
+        <div id="user_projects">
+            <a href="{% url 'new-project' %}">
+                <div class="new_project user_project">
+                    <h2>+</h2>
+                </div>
+            </a>
+            {% if user_projects %}
+                {% for user_project in user_projects %}
+                <div class="user_project">
+                    <h4><a href="{{user_project.get_absolute_url}}">{{user_project.title}}</a></h4>
+                    <p>{{user_project.source_language}} > {{user_project.target_language}}</p>
+                    <p>N/A File(s)</p>
+                    <p>Word Count: Not Yet Implemented</p>
+                    <p>Progress: Not Yet Implemented</p>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div id="user_essentials"><br></div>
+    </main>
+{% endblock %}

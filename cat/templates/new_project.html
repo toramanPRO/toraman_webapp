@@ -1,0 +1,44 @@
+{% extends 'template.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    New Project
+{% endblock %}
+
+{% block body %}
+    <main id="new_project">
+        {% if errors %}
+            {% for error in errors %}
+                {{error}}
+            {% endfor %}
+        {% endif %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <th colspan="2"><h2>New Project</h2></th>
+                </tr>
+                <tr>
+                    <th class="form_label">{{form.title.label_tag}}</th>
+                    <td>{{form.title}}</td>
+                </tr>
+                <tr>
+                    <th class="form_label">{{form.source_language.label_tag}}</th>
+                    <td>{{form.source_language}}</td>
+                </tr>
+                <tr>
+                    <th class="form_label">{{form.target_language.label_tag}}</th>
+                    <td>{{form.target_language}}</td>
+                </tr>
+                <tr>
+                    <th class="form_label">{{form.source_files.label_tag}}</th>
+                    <td id="upload">{{form.source_files}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><button type="submit">Submit</button></td>
+                </tr>
+            </table>
+        </form>
+    </main>
+{% endblock %}

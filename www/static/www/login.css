@@ -1,0 +1,86 @@
+a, body, button, div, form, h1, h2, h3, h4, header, input, label, li, nav, p, td, th, tr, ul {
+    background-color: #FFFFFF;
+    border: none;
+    box-sizing: border-box;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 100;
+    list-style-type: none;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-decoration: none;
+}
+
+body {
+    text-align: center;
+}
+
+button {
+    background-color: #126868;
+    border: 1px solid #FFF;
+    border-radius: 5px;
+    color: #FFF;
+    font-weight: 800;
+    padding: 7px;
+    
+}
+
+button:disabled {
+    background-color: rgb(187, 192, 191);
+}
+
+button:hover {
+    background-color: #FFF;
+    border: 1px solid #126868;
+    color: #126868;
+    transition: 0.4s;
+}
+
+button:active {
+    background-color: #126868;
+    border: 1px solid #126868;
+    color: #FFF;;
+}
+
+input {
+    border: 1px solid #121212;
+    border-radius: 5px;
+    padding: 7px 0 7px 7px;
+    margin: 7px 0;
+}
+
+input:focus {
+    border: 1px solid #126868;
+}
+
+main {
+    border: 1px solid #121212;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 20vh auto;
+    min-width: 200px;
+    padding: 14px;
+}
+
+table {
+    width: 100%;
+}
+
+table a {
+    color: #0000FF;
+    text-decoration: underline;
+}
+
+table td {
+    text-align: left;
+}
+
+table th {
+    text-align: right;
+}
+
+ul.errorlist {
+    padding-bottom: 14px;
+}

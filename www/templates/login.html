@@ -1,0 +1,32 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'www/login.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <main>
+        {% if next %}
+        <form action="/login?next={{next}}" method="POST">
+        {%else%}
+        <form method="POST">
+        {% endif %}
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+                <tr>
+                    <th></th>
+                    <td><a href="{% url 'password-reset' %}">Forgot password</a></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><button type="submit">Login</button></td>
+                </tr>
+            </table>
+        </form>
+    </main>
+</body>
+</html>
