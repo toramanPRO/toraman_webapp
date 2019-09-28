@@ -18,7 +18,10 @@ import string
 # Create your views here.
 
 def homepage(request):
-    return render(request, 'homepage.html')
+    context = {
+        'version_number': settings.VERSION
+    }
+    return render(request, 'homepage.html', context)
 
 def log_in(request):
     form = AuthenticationForm(data=request.POST or None)
@@ -104,7 +107,7 @@ def reset_password(request):
                 send_mail(
                     'Password reset e-mail for {0}'.format(password_reset_token.user.username),
                     plaintext_email,
-                    'haberci@csengor.com',
+                    settings.DEFAULT_FROM_EMAIL,
                     [password_reset_token.user.email],
                     html_message=html_email,
                     fail_silently=False,
