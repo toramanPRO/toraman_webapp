@@ -140,6 +140,10 @@ nav h4, nav h4 a {
     background-color: #126868;
 }
 
+p#version_number {
+    text-align: right;
+}
+
 table {
     margin: 0 auto;
 }
