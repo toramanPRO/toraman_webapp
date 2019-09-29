@@ -52,5 +52,8 @@ $(document).ready(function() {
         ).fail(function() {
             console.log("Segment #" + segment_no + " submission failed.")
         })
+        if (segment_status == "Translated") {
+            target_cell.closest("tr").next().find("td.target").focus()
+        }
     }
 });
