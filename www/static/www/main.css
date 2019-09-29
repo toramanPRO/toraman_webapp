@@ -144,6 +144,24 @@ table {
     margin: 0 auto;
 }
 
+table#shortcuts {
+    display: block;
+    margin: 14px;
+}
+
+table#shortcuts td, table#shortcuts th {
+    border: 1px solid gray;
+    padding: 14px;
+}
+
+table#shortcuts th {
+    text-align: center;
+}
+
+table#shortcuts th#title {
+    text-align: left;
+}
+
 table h2 {
     margin-bottom: 3.5px;
 }
