@@ -154,7 +154,7 @@ table#shortcuts {
 }
 
 table#shortcuts td, table#shortcuts th {
-    border: 1px solid gray;
+    border: 1px solid #999;
     padding: 14px;
 }
 
