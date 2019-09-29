@@ -7,6 +7,30 @@
 
 {% block body %}
     <main>
-        toraman webapp v{{version_number}}
+        <p>Click on your username on top right-hand corner to access your translation projects.</p>
+        <table id="shortcuts" cellspacing="0">
+            <tr>
+                <th colspan="2" id="title">
+                    <h4>Shortcuts</h4>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <p>ctrl+return</p>
+                </th>
+                <td>
+                    <p>Submits the currently focused segment, tagging it as "Translated", and focuses the next segment.</p>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <p>ctrl+insert</p>
+                </th>
+                <td>
+                    <p>Copies the source segment into the target segment.</p>
+                </td>
+            </tr>
+        </table>
+        <p id="version_number">toraman webapp v{{version_number}}</p>
     </main>
 {% endblock %}
