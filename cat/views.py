@@ -127,9 +127,9 @@ def download_target_file(request, user_id, project_id, source_file):
 
     bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
     bf.generate_target_translation(os.path.join(user_project.get_source_dir(), source_file),
-                                    os.path.join(user_project.get_source_dir(), 'target')
+                                    user_project.get_target_dir()
                                     )
-    target_file_path = os.path.join(user_project.get_source_dir(), 'target', source_file)
+    target_file_path = os.path.join(user_project.get_target_dir(), source_file)
 
     response = FileResponse(open(target_file_path, 'rb'))
     response['Content-Disposition'] = 'attachment; filename={0}'.format(source_file)
