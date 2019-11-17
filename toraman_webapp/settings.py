@@ -15,7 +15,7 @@ import random
 
 from .local_settings import *
 
-__version__ = '0.0.3'
+__version__ = '0.1.0'
 VERSION = __version__
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
