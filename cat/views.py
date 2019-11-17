@@ -162,13 +162,13 @@ def new_project(request):
             if context['errors']:
                 return render(request, 'new_project.html', context)
             else:
-                submitted_project = form.save(commit=False)
-                submitted_project.translation_memory = user_translation_memory
-                submitted_project.user = request.user
-                submitted_project.source_files = ';'.join([uploaded_file.name for uploaded_file in uploaded_files])
-                submitted_project.save()
+                user_project = form.save(commit=False)
+                user_project.translation_memory = user_translation_memory
+                user_project.user = request.user
+                user_project.source_files = ';'.join([uploaded_file.name for uploaded_file in uploaded_files])
+                user_project.save()
 
-                source_files_dir = submitted_project.get_source_dir()
+                source_files_dir = user_project.get_source_dir()
                 os.makedirs(source_files_dir)
 
                 time.sleep(0.5)
@@ -178,11 +178,11 @@ def new_project(request):
                         for line in uploaded_file:
                             output_file.write(line)
 
-                for source_file in submitted_project.source_files.split(';'):
+                for source_file in user_project.source_files.split(';'):
                     sf = SourceFile(os.path.join(source_files_dir, source_file))
                     sf.write_bilingual_file(source_files_dir)
 
-                return redirect(submitted_project)
+                return redirect(user_project)
         else:
             context['errors'] = form.errors
             return render(request, 'new_project.html', context)
