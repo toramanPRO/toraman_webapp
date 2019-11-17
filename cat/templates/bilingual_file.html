@@ -30,7 +30,7 @@
         {% csrf_token %}
         <table>
         {% for segment in segments %}
-            <tr class="segment {% cycle 'odd' 'even' %}">
+            <tr class="segment {% cycle 'odd' 'even' %} {{segment.status}}">
                 <td class="details">
                     <p class="paragraph-no">{{segment.paragraph_no}}</p>
                     <p class="segment-no">{{segment.segment_no}}</p>

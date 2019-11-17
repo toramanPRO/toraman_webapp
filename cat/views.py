@@ -94,7 +94,7 @@ def bilingual_file(request, user_id, project_id, source_file):
             for segment in paragraph:
                 source_segment = segment_to_html(segment[0])
                 target_segment = segment_to_html(segment[2])
-                segment_status = segment[1]
+                segment_status = segment[1].text.lower()
                 paragraph_no = segment[3]
                 segment_no = segment[4]
 

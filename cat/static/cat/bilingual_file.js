@@ -35,6 +35,9 @@ $(document).ready(function() {
 
         } else if (e.key == "Enter") {
             e.preventDefault()
+        } else {
+            $(this).closest("tr").addClass("draft")
+            $(this).closest("tr").removeClass("translated")
         }
     })
 
@@ -43,7 +46,9 @@ $(document).ready(function() {
     })
 
     $("td.target").focusout(function() {
-        submit_segment("Draft", $(this))
+        if ($(this).closest("tr").hasClass("draft")) {
+            submit_segment("Draft", $(this))
+        }
     })
 
     function lookup_segment(target_cell) {
@@ -68,6 +73,11 @@ $(document).ready(function() {
         var paragraph_no = target_cell.closest("tr").find("td.details p.paragraph-no").text()
         var segment_no = target_cell.closest("tr").find("td.details p.segment-no").text()
 
+        if (segment_status == "Translated") {
+            target_cell.closest("tr").addClass("translated")
+            target_cell.closest("tr").removeClass("draft")
+        }
+
         $.post(
             $(location).attr("href"),
             {
@@ -83,6 +93,11 @@ $(document).ready(function() {
             }
         ).fail(function() {
             console.log("Segment #" + segment_no + " submission failed.")
+
+            if (segment_status == "Translated") {
+                target_cell.closest("tr").removeClass("translated")
+            }
+            target_cell.closest("tr").addClass("draft")
         })
         if (segment_status == "Translated") {
             target_cell.closest("tr").next().find("td.target").focus()
