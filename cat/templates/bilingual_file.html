@@ -15,6 +15,18 @@
         <a href="{{download_url}}"><button id="generate_target_translation">Download Translation</button></a>
     </header>
     <main>
+        <div id="tm-hits">
+            <a id="tm-url" href="{{tm.get_absolute_url}}"><p>TM: {{tm.title}}</p></a>
+            <table id="tm-hits">
+                <tr class="segment na odd">
+                        <td class="details">
+                            <p class="levenshtein_ratio"><br></p>
+                        </td>
+                        <td class="source">N/A</td>
+                        <td class="target"><br></td>
+                </tr>
+            </table>
+        </div>
         {% csrf_token %}
         <table>
         {% for segment in segments %}

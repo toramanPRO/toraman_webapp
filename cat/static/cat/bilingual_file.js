@@ -29,18 +29,42 @@ $(document).ready(function() {
         }
     })
 
+    $("td.target").focusin(function() {
+        lookup_segment($(this))
+    })
+
     $("td.target").focusout(function() {
         submit_segment("Draft", $(this))
     })
 
+    function lookup_segment(target_cell) {
+        var source_segment = target_cell.closest("tr").find("td.source").html()
+
+        $.get(
+            $("a#tm-url").attr("href"),
+            {
+                "csrfmiddlewaretoken": csrf_token,
+                "procedure": "lookup",
+                "source_segment": source_segment,
+            },
+            function(html) {
+                console.log(html)
+                $("table#tm-hits").html(html);
+            }
+        )
+    }
+
     function submit_segment(segment_status, target_cell) {
+        var source_segment = target_cell.closest("tr").find("td.source").html()
         var target_segment = target_cell.html()
         var paragraph_no = target_cell.closest("tr").find("td.details p.paragraph_no").text()
         var segment_no = target_cell.closest("tr").find("td.details p.segment_no").text()
+
         $.post(
-            $(location). attr("href"),
+            $(location).attr("href"),
             {
                 "csrfmiddlewaretoken": csrf_token,
+                "source_segment": source_segment,
                 "target_segment": target_segment,
                 "segment_status": segment_status,
                 "paragraph_no": paragraph_no,

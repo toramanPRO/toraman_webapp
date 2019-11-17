@@ -2,12 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    New Project
-{% endblock %}
-
-{% block js %}
-    <script type="text/javascript" src="{% static 'jquery-3.4.0.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'cat/translation_memory_query.js' %}"></script>
+    New TM
 {% endblock %}
 
 {% block body %}
@@ -21,7 +16,7 @@
             {% csrf_token %}
             <table>
                 <tr>
-                    <th colspan="2"><h2>New Project</h2></th>
+                    <th colspan="2"><h2>New TM</h2></th>
                 </tr>
                 <tr>
                     <th class="form_label">{{form.title.label_tag}}</th>
@@ -34,14 +29,6 @@
                 <tr>
                     <th class="form_label">{{form.target_language.label_tag}}</th>
                     <td>{{form.target_language}}</td>
-                </tr>
-                <tr>
-                    <th class="form_label">{{form.translation_memory.label_tag}}</th>
-                    <td>{{form.translation_memory}}</td>
-                </tr>
-                <tr>
-                    <th class="form_label">{{form.source_files.label_tag}}</th>
-                    <td id="upload">{{form.source_files}}</td>
                 </tr>
                 <tr>
                     <th></th>

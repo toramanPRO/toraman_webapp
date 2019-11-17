@@ -1,0 +1,9 @@
+<select>
+{% if user_tms %}
+    {% for user_tm in user_tms %}
+    <option value="{{user_tm.id}}">{{user_tm.title}}</option>
+    {% endfor %}
+{% else %}
+    <option value="---">N/A</option>
+{% endif %}
+</select>

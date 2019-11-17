@@ -125,6 +125,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 USER_PROJECT_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'toraman_user_projects')
 
+# TranslationMemories (toraman.TranslationMemory)
+
+USER_TM_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'toraman_user_tms')
+
 # Log in url for @login_required()
 
 LOGIN_URL = 'login'

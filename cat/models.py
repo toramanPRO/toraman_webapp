@@ -7,12 +7,31 @@ import os
 # Create your models here.
 
 
+class TranslationMemory(models.Model):
+    title = models.CharField(max_length=60)
+    source_language = models.CharField(max_length=2)
+    target_language = models.CharField(max_length=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Translation Memory'
+        verbose_name_plural = 'Translation Memories'
+
+    def get_absolute_url(self):
+        return reverse('translation-memory', args=[str(self.user.id), str(self.id)])
+
+    def get_tm_path(self):
+        return os.path.join(settings.USER_TM_ROOT, str(self.user.id), str(self.id), self.title + '.ttm')
+
+
 class Project(models.Model):
     title = models.CharField(max_length=60)
     source_language = models.CharField(max_length=60)
     target_language = models.CharField(max_length=60)
     source_files = models.CharField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    translation_memory = models.ForeignKey(TranslationMemory, blank=True, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_absolute_url(self):

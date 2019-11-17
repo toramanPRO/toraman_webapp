@@ -58,7 +58,7 @@ div.new_project:hover h2 {
     transition: 0.4s;
 }
 
-div.user_project {
+div.user_project, div.user_tm {
     border: 1px solid #FFF;
     background-color: rgb(251, 251, 251);
     border-radius: 5px;
@@ -67,16 +67,20 @@ div.user_project {
     vertical-align: top;
 }
 
-div#user_essentials {
-    background-color: rgb(251, 251, 251);
+div#user_projects {
+    display: inline-block;
+    vertical-align: top;
+    width: 59%;
+}
+
+div#user_tms {
     display: inline-block;
     vertical-align: top;
     width: 40%;
 }
 
-div#user_projects {
-    display: inline-block;
-    width: 59%;
+h1 {
+    font-size: 30px;
 }
 
 h2 {

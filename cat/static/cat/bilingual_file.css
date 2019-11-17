@@ -44,6 +44,11 @@ table {
     width: 100%;
 }
 
+div#tm-hits {
+    height: 150px;
+    overflow-y: scroll;
+}
+
 td.details, td.source, td.target {
     border: 1px solid #ccc;
     height: auto;

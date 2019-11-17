@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
-from cat.models import Project
+from cat.models import Project, TranslationMemory
 
 from .forms import PasswordResetForm, SetPasswordForm, UserForm
 from .models import PasswordResetToken
@@ -151,6 +151,7 @@ def user_dashboard(request, username):
     if username == request.user.username:
         context = {
             'user_projects': Project.objects.filter(user=request.user).order_by('-id'),
+            'user_tms': TranslationMemory.objects.filter(user=request.user).order_by('-id'),
         }
         response = render(request, 'user-dashboard.html', context)
     else:
