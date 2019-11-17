@@ -44,21 +44,21 @@ button:active {
     color: #FFF;;
 }
 
-div.new_project {
+div.new-project {
     text-align: center;
 }
 
-div.new_project:hover {
+div.new-project:hover {
     border: 1px solid #126868;
     transition: 0.4s;
 }
 
-div.new_project:hover h2 {
+div.new-project:hover h2 {
     color: #126868;
     transition: 0.4s;
 }
 
-div.user_project, div.user_tm {
+div.user-project, div.user-tm {
     border: 1px solid #FFF;
     background-color: rgb(251, 251, 251);
     border-radius: 5px;
@@ -67,13 +67,13 @@ div.user_project, div.user_tm {
     vertical-align: top;
 }
 
-div#user_projects {
+div#user-projects {
     display: inline-block;
     vertical-align: top;
     width: 59%;
 }
 
-div#user_tms {
+div#user-tms {
     display: inline-block;
     vertical-align: top;
     width: 40%;
@@ -125,7 +125,7 @@ main {
     vertical-align: top;
 }
 
-main#new_project {
+main#new-project {
     background-color: rgb(251, 251, 251);
     border-radius: 5px;
     margin: 1.5% auto;
@@ -144,7 +144,7 @@ nav h4, nav h4 a {
     background-color: #126868;
 }
 
-p#version_number {
+p#version-number {
     text-align: right;
 }
 
@@ -182,6 +182,6 @@ table td#upload input {
     border: 0;
 }
 
-table th.form_label {
+table th.form-label {
     text-align: right;
 }

@@ -13,7 +13,7 @@
         <br>
         <div>
             <h4>File(s):</h4>
-            <ul id="source_files">
+            <ul id="source-files">
             {% for source_file in source_files %}
             <li><p>> 
                 <a href="{% url 'bilingual-file'  user_project.user.id user_project.id source_file %}">

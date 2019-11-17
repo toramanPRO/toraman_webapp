@@ -3,7 +3,7 @@
     {% for tm_hit in tm_hits %}
     <tr class="segment {% cycle 'odd' 'even' %}">
         <td class="details">
-            <p class="levenshtein_ratio">{{tm_hit.levenshtein_ratio}}</p>
+            <p class="levenshtein-ratio">{{tm_hit.levenshtein_ratio}}</p>
         </td>
         <td class="source">{{tm_hit.source|safe}}</td>
         <td class="target">{{tm_hit.target|safe}}</td>
@@ -12,7 +12,7 @@
 {% else %}
     <tr class="segment na odd">
         <td class="details">
-            <p class="levenshtein_ratio"><br></p>
+            <p class="levenshtein-ratio"><br></p>
         </td>
         <td class="source">N/A</td>
         <td class="target"><br></td>

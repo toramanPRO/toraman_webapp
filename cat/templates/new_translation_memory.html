@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-    <main id="new_project">
+    <main id="new-project">
         {% if errors %}
             {% for error in errors %}
                 {{error}}
@@ -19,15 +19,15 @@
                     <th colspan="2"><h2>New TM</h2></th>
                 </tr>
                 <tr>
-                    <th class="form_label">{{form.title.label_tag}}</th>
+                    <th class="form-label">{{form.title.label_tag}}</th>
                     <td>{{form.title}}</td>
                 </tr>
                 <tr>
-                    <th class="form_label">{{form.source_language.label_tag}}</th>
+                    <th class="form-label">{{form.source_language.label_tag}}</th>
                     <td>{{form.source_language}}</td>
                 </tr>
                 <tr>
-                    <th class="form_label">{{form.target_language.label_tag}}</th>
+                    <th class="form-label">{{form.target_language.label_tag}}</th>
                     <td>{{form.target_language}}</td>
                 </tr>
                 <tr>

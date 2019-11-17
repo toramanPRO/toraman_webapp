@@ -30,7 +30,7 @@ button:hover {
     color: rgb(255, 255, 255);
 }
 
-button#generate_target_translation {
+button#generate-target-translation {
     float: right;
 }
 
@@ -62,7 +62,7 @@ td.details {
     width: 4%;
 }
 
-td.details p.paragraph_no {
+td.details p.paragraph-no {
     display: none;
 }
 

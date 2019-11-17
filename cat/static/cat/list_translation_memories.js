@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    var source_language = $("input#id_source_language")
-    var target_language = $("input#id_target_language")
-    var translation_memory = $("select#id_translation_memory")
+    var source_language = $("input#id-source-language")
+    var target_language = $("input#id-target-language")
+    var translation_memory = $("select#id-translation-memory")
 
     source_language.change(function() {
         if (source_language.val().length == 2 && target_language.val().length == 2) {

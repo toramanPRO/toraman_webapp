@@ -12,7 +12,7 @@
 <body>
     <header>
         <a href="{{project_url}}"><button id="back">Back</button></a>
-        <a href="{{download_url}}"><button id="generate_target_translation">Download Translation</button></a>
+        <a href="{{download_url}}"><button id="generate-target-translation">Download Translation</button></a>
     </header>
     <main>
         <div id="tm-hits">
@@ -20,7 +20,7 @@
             <table id="tm-hits">
                 <tr class="segment na odd">
                         <td class="details">
-                            <p class="levenshtein_ratio"><br></p>
+                            <p class="levenshtein-ratio"><br></p>
                         </td>
                         <td class="source">N/A</td>
                         <td class="target"><br></td>
@@ -32,8 +32,8 @@
         {% for segment in segments %}
             <tr class="segment {% cycle 'odd' 'even' %}">
                 <td class="details">
-                    <p class="paragraph_no">{{segment.paragraph_no}}</p>
-                    <p class="segment_no">{{segment.segment_no}}</p>
+                    <p class="paragraph-no">{{segment.paragraph_no}}</p>
+                    <p class="segment-no">{{segment.segment_no}}</p>
                 </td>
                 <td class="source">{{segment.source|safe}}</td>
                 <td class="target" contenteditable="true">{{segment.target|safe}}</td>
