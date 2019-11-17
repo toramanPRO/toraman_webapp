@@ -17,7 +17,18 @@ $(document).ready(function() {
                 e.preventDefault()
                 var source_html = $(this).closest("tr").find("td.source").html()
                 $(this).html(source_html);
-            } else if (e.key == "A" || e.key == "a" || e.key == "Backscape" || e.key == "Delete") {
+            } else if (e.key == "A"
+                    || e.key == "a"
+                    || e.key == "Backspace"
+                    || e.key == "Delete"
+                    || e.key == "C"
+                    || e.key == "c"
+                    || e.key == "X"
+                    || e.key == "x"
+                    || e.key == "V"
+                    || e.key == "v"
+                    || e.key == "Z"
+                    || e.key == "z") {
             } else {
                 e.preventDefault()
             }
