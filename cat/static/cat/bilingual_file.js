@@ -24,8 +24,6 @@ $(document).ready(function() {
 
         } else if (e.key == "Enter") {
             e.preventDefault()
-        } else {
-            console.log(e.key)
         }
     })
 
@@ -48,7 +46,6 @@ $(document).ready(function() {
                 "source_segment": source_segment,
             },
             function(html) {
-                console.log(html)
                 $("table#tm-hits").html(html);
             }
         )
