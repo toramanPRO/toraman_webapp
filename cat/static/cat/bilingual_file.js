@@ -69,7 +69,7 @@ $(document).ready(function() {
 
     function submit_segment(segment_status, target_cell) {
         var source_segment = target_cell.closest("tr").find("td.source").html()
-        var target_segment = target_cell.html()
+        var target_segment = target_cell.html().replace(/&nbsp;/g, ' ')
         var paragraph_no = target_cell.closest("tr").find("td.details p.paragraph-no").text()
         var segment_no = target_cell.closest("tr").find("td.details p.segment-no").text()
 
