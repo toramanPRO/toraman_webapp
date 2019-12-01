@@ -62,7 +62,7 @@ def register(request):
             user = form.save()
             user.set_password(user.password)
             user.save()
-            
+
             return redirect('homepage')
 
     return render(request, 'register.html', context)
@@ -84,7 +84,7 @@ def reset_password(request):
 
                 token = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(64))
                 while len(PasswordResetToken.objects.filter(token=token)) > 0:
-                    token = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(64)) 
+                    token = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(64))
 
                 for password_reset_token in PasswordResetToken.objects.filter(user=user):
                     password_reset_token.delete()
@@ -119,7 +119,7 @@ def reset_password(request):
             return render(request, 'password-reset.html', context)
 
     else:
-        
+
         return render(request, 'password-reset.html', context)
 
 def set_password(request, token):

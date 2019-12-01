@@ -88,7 +88,7 @@ def bilingual_file(request, user_id, project_id, source_file):
                                                 user_project.translation_memory.target_language)
 
             user_translation_memory.submit_segment(source_segment, target_segment)
-        
+
         return HttpResponse('Segment #{0} submitted successfully.'.format(segment_no),
                             content_type='text/plain')
 
@@ -117,7 +117,7 @@ def bilingual_file(request, user_id, project_id, source_file):
                 segments.append(segment)
 
         context = {
-            
+
             'download_url': reverse('download-target-file', args=(user_id, project_id, source_file)),
             'project_url': user_project.get_absolute_url(),
             'segments': segments,
