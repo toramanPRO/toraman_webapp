@@ -52,6 +52,8 @@ div#tm-hits {
 td.details, td.source, td.target {
     border: 1px solid #ccc;
     height: auto;
+    line-height: 20px;
+    overflow-wrap: break-word;
     padding: 4px;
     vertical-align: top;
     width: 48%;
@@ -89,6 +91,6 @@ tag.end {
     padding: 0 8px 0 4px;
 }
 
-tag.image, tag.br, tag.tab {
+tag.standalone {
     border-radius: 4px;
 }
