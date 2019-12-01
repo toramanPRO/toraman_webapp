@@ -49,7 +49,12 @@ def segment_to_html(source_or_target_segment):
             tag.attrib['class'] = sub_elem.tag.split('}')[-1]
             tag.text = tag.attrib['class']
             if 'type' in sub_elem.attrib:
-                tag.attrib['class'] += ' ' + sub_elem.attrib['type']
+                if sub_elem.attrib['type'] == 'beginning' or sub_elem.attrib['type'] == 'end':
+                    tag.attrib['class'] += ' ' + sub_elem.attrib['type']
+                else:
+                    tag.attrib['class'] += ' ' + 'standalone'
+            else:
+                tag.attrib['class'] += ' ' + 'standalone'
 
             if 'no' in sub_elem.attrib:
                 tag.text += sub_elem.attrib['no']
