@@ -2,14 +2,14 @@
 {% load staticfiles %}
 
 {% block title %}
-    {{user_tm.title}}
+    {{ user_tm.title }}
 {% endblock %}
 
 {% block body %}
     <main>
-        <div><h2>{{user_tm.title}}</h2></div>
+        <div><h2>{{ user_tm.title }}</h2></div>
         <br>
-        <div><h4>{{user_tm.source_language}} > {{user_tm.target_language}}</h4></div>
+        <div><h4>{{ user_tm.source_language }} > {{ user_tm.target_language }}</h4></div>
         <br>
     </main>
 {% endblock %}
