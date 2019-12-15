@@ -23,5 +23,26 @@
             {% endfor %}
             </ul>
         </div>
+        {% if user_is_pm %}
+        <div>
+            <h4>PM Settings:</h4>
+            {% if user_project.translator %}
+            <p>This project is currently assigned to {{ user_project.translator.username }}.</p>
+            {% else %}
+            <p>This project hasn't been assigned to a translator yet. Use the form below to do so.</p>
+            <form method="POST">
+                {% csrf_token %}
+                <div>
+                    {% if error %}
+                    <p>{{ error }}</p>
+                    {% endif %}
+                    <p>{{ form.translator.label }}: {{ form.translator }}</p>
+                    <br>
+                    <button type="submit">Assign</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
     </main>
 {% endblock %}

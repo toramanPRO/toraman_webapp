@@ -4,7 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
+from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
@@ -152,12 +153,12 @@ def user_dashboard(request, username):
         context = {
             'user_can_add_projects': request.user.has_perm('cat.add_project'),
             'user_can_add_tms': request.user.has_perm('cat.add_translationmemory'),
-            'user_projects': Project.objects.filter(user=request.user).order_by('-id'),
+            'user_projects': Project.objects.filter(Q(user=request.user)|Q(translator=request.user)).order_by('-id'),
             'user_tms': TranslationMemory.objects.filter(user=request.user).order_by('-id'),
         }
         response = render(request, 'user-dashboard.html', context)
     else:
-        response = HttpResponseRedirect('No such user.')
+        response = HttpResponse('The user either does not exist or is not public.')
         response.status_code = 404
 
     return response

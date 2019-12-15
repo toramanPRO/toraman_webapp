@@ -1,5 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
 import copy
@@ -13,7 +14,7 @@ from lxml import etree
 from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
 
-from .forms import ProjectForm, TranslationMemoryForm
+from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
 from .models import Project, TranslationMemory
 # Create your views here.
 
@@ -66,9 +67,19 @@ def segment_to_html(source_or_target_segment):
 
 @login_required()
 def bilingual_file(request, user_id, project_id, source_file):
-    assert user_id == request.user.id
-    user_project = Project.objects.get(id=project_id)
-    assert user_project.user == request.user
+    try:
+        user_project = Project.objects.get(id=project_id)
+    except Project.DoesNotExist:
+        response = HttpResponse('Project does not exist.')
+        response.status_code = 404
+
+        return response
+
+    if not user_project.user == request.user and not user_project.translator == request.user:
+        response = HttpResponse('You aren\'t authorised to work on this project.')
+        response.status_code = 403
+
+        return response
 
     bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
 
@@ -230,20 +241,48 @@ def new_translation_memory(request):
 
 @login_required()
 def project(request, user_id, project_id):
-    assert user_id == request.user.id
-    user_project = Project.objects.get(id=project_id)
-    assert user_project.user == request.user
+    try:
+        user_project = Project.objects.get(id=project_id)
+    except Project.DoesNotExist:
+        response = HttpResponse('Project does not exist.')
+        response.status_code = 404
+
+        return response
+
+    if not user_project.user == request.user and not user_project.translator == request.user:
+        response = HttpResponse('You aren\'t authorised to view this project.')
+        response.status_code = 403
+
+        return response
 
     context = {
+        'user_is_pm': request.user.has_perm('cat.change_project'),
         'user_project': Project.objects.get(id=project_id),
         'source_files': user_project.source_files.split(';'),
     }
+    if context['user_is_pm']:
+        context['form'] = AssignProjectToTranslatorForm(request.POST or None)
+
+    if request.method == 'POST':
+        if not context['user_is_pm'] and not user_project.user == request.user:
+            response = HttpResponse('You aren\'t authorised to modify this project.')
+            response.status_code = 403
+
+            return response
+
+        if context['form'].is_valid():
+            try:
+                translator = User.objects.get(username=context['form'].cleaned_data['translator'])
+                user_project.translator = translator
+                user_project.save()
+            except User.DoesNotExist:
+                context['error'] = 'User does not exist.'
 
     return render(request, 'project.html', context)
 
 
 @login_required()
-def translation_memory(request, user_id, tm_id):
+def translation_memory(request, user_id, tm_id): # TODO: Allow assigned translators to look segments ups.
     assert user_id == request.user.id
     user_tm = TranslationMemory.objects.get(id=tm_id)
     assert user_tm.user == request.user

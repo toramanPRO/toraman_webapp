@@ -32,7 +32,8 @@ class Project(models.Model):
     source_files = models.CharField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     translation_memory = models.ForeignKey(TranslationMemory, blank=True, null=True, on_delete=models.SET_NULL)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_posted_the_project')
+    translator = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, related_name='user_who_was_assigned_the_project')
 
     def get_absolute_url(self):
         return reverse('project', args=[str(self.user.id), str(self.id)])
