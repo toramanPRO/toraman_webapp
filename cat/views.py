@@ -43,7 +43,7 @@ def bilingual_file(request, user_id, project_id, source_file):
         segment_no = int(request.POST['segment_no'])
 
         bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
-        bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no)
+        bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no, str(request.user.id))
         bf.save(user_project.get_source_dir())
 
         if segment_status == 'Translated' and user_project.translation_memory is not None:
@@ -51,7 +51,7 @@ def bilingual_file(request, user_id, project_id, source_file):
                                         user_project.translation_memory.source_language,
                                         user_project.translation_memory.target_language)
 
-            user_translation_memory.submit_segment(source_segment, target_segment)
+            user_translation_memory.submit_segment(source_segment, target_segment, str(request.user.id))
 
         return HttpResponse('Segment #{0} submitted successfully.'.format(segment_no),
                             content_type='text/plain')
