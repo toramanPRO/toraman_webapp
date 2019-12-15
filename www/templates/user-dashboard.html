@@ -9,11 +9,13 @@
     <main>
         <div id="user-projects">
             <h1>Projects</h1>
+            {% if user_can_add_projects %}
             <a href="{% url 'new-project' %}">
                 <div class="new-project user-project">
                     <h2>+</h2>
                 </div>
             </a>
+            {% endif %}
             {% if user_projects %}
                 {% for user_project in user_projects %}
                 <div class="user-project">
@@ -24,8 +26,15 @@
                     <p>Progress: Not Yet Implemented</p>
                 </div>
                 {% endfor %}
+            {% else %}
+                {% if not user_can_add_projects %}
+                <div class="user-project">
+                    <h4>You haven't been assigned a project yet.</h4>
+                </div>
+                {% endif %}    
             {% endif %}
         </div>
+        {% if user_can_add_tms %}
         <div id="user-tms">
             <h1>Translation Memories</h1>
             <a href="{% url 'new-translation-memory' %}">
@@ -42,5 +51,6 @@
                 {% endfor %}
             {% endif %}
         </div>
+        {% endif %}
     </main>
 {% endblock %}

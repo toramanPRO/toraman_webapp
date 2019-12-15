@@ -150,6 +150,8 @@ def set_password(request, token):
 def user_dashboard(request, username):
     if username == request.user.username:
         context = {
+            'user_can_add_projects': request.user.has_perm('cat.add_project'),
+            'user_can_add_tms': request.user.has_perm('cat.add_translationmemory'),
             'user_projects': Project.objects.filter(user=request.user).order_by('-id'),
             'user_tms': TranslationMemory.objects.filter(user=request.user).order_by('-id'),
         }

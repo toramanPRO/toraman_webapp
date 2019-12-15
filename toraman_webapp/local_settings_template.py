@@ -9,10 +9,13 @@ DEBUG = False
 # SECRET_KEY = ''.join(random.choice(string.ascii_letters + string.punctuation + string.digits) for i in range(64))
 
 # E-mail settings
-#EMAIL_BACKEND = 
-#EMAIL_HOST = 
-#EMAIL_PORT = 
-#EMAIL_HOST_USER = 
-#EMAIL_HOST_PASSWORD = 
-#EMAIL_USE_TLS = 
-#DEFAULT_FROM_EMAIL = 
+#EMAIL_BACKEND =
+#EMAIL_HOST =
+#EMAIL_PORT =
+#EMAIL_HOST_USER =
+#EMAIL_HOST_PASSWORD =
+#EMAIL_USE_TLS =
+#DEFAULT_FROM_EMAIL =
+
+# Default user permissions
+#USERS_CAN_ADD_PROJECTS_BY_DEFAULT = True

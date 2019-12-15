@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import FileResponse, HttpResponse
 
 import copy
@@ -146,7 +146,7 @@ def download_target_file(request, user_id, project_id, source_file):
     return response
 
 
-@login_required()
+@permission_required('cat.add_project', raise_exception=True)
 def new_project(request):
     form = ProjectForm(request.POST or None, request.FILES)
 
@@ -198,7 +198,7 @@ def new_project(request):
         return render(request, 'new_project.html', context)
 
 
-@login_required()
+@permission_required('cat.add_translationmemory', raise_exception=True)
 def new_translation_memory(request):
     form = TranslationMemoryForm(request.POST or None)
 
