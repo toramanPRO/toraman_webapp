@@ -55,7 +55,7 @@ $(document).ready(function() {
         var source_segment = target_cell.closest("tr").find("td.source").html()
 
         $.get(
-            $("a#tm-url").attr("href"),
+            $(location).attr("href"),
             {
                 "csrfmiddlewaretoken": csrf_token,
                 "procedure": "lookup",

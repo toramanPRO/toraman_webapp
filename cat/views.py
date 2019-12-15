@@ -81,8 +81,6 @@ def bilingual_file(request, user_id, project_id, source_file):
 
         return response
 
-    bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
-
     if request.method == 'POST':
         source_segment = html_to_segment(request.POST['source_segment'], 'source')
         target_segment = html_to_segment(request.POST['target_segment'], 'target')
@@ -90,13 +88,14 @@ def bilingual_file(request, user_id, project_id, source_file):
         paragraph_no = int(request.POST['paragraph_no'])
         segment_no = int(request.POST['segment_no'])
 
+        bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
         bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no)
         bf.save(user_project.get_source_dir())
 
         if segment_status == 'Translated' and user_project.translation_memory is not None:
             user_translation_memory = TM(user_project.translation_memory.get_tm_path(),
-                                                user_project.translation_memory.source_language,
-                                                user_project.translation_memory.target_language)
+                                        user_project.translation_memory.source_language,
+                                        user_project.translation_memory.target_language)
 
             user_translation_memory.submit_segment(source_segment, target_segment)
 
@@ -104,38 +103,64 @@ def bilingual_file(request, user_id, project_id, source_file):
                             content_type='text/plain')
 
     else:
-        paragraphs = (paragraph for paragraph in bf.paragraphs)
-        segments = []
-        for paragraph in paragraphs:
-            for segment in paragraph:
-                source_segment = segment_to_html(segment[0])
-                target_segment = segment_to_html(segment[2])
-                if segment[1].text is not None:
-                    segment_status = segment[1].text.lower()
-                else:
-                    segment_status = ''
-                paragraph_no = segment[3]
-                segment_no = segment[4]
+        if request.GET.get('procedure') == 'lookup':
+            source_segment = html_to_segment(request.GET['source_segment'], 'source')
 
-                segment = {
-                    'source': source_segment,
-                    'target': target_segment,
-                    'status': segment_status,
-                    'paragraph_no': paragraph_no,
-                    'segment_no': segment_no,
-                }
+            user_translation_memory = TM(user_project.translation_memory.get_tm_path(),
+                                        user_project.translation_memory.source_language,
+                                        user_project.translation_memory.target_language)
 
-                segments.append(segment)
+            tm_hits = [[], user_translation_memory.lookup(source_segment)]
 
-        context = {
+            for tm_hit in tm_hits[1]:
+                tm_hit = [{}, tm_hit]
 
-            'download_url': reverse('download-target-file', args=(user_id, project_id, source_file)),
-            'project_url': user_project.get_absolute_url(),
-            'segments': segments,
-            'tm': user_project.translation_memory,
-        }
+                tm_hit[0]['levenshtein_ratio'] = '{0}%'.format(int(tm_hit[1][0]*100))
+                tm_hit[0]['source'] = segment_to_html(tm_hit[1][1])
+                tm_hit[0]['target'] = segment_to_html(tm_hit[1][2])
 
-        return render(request, 'bilingual_file.html', context)
+                tm_hits[0].append(tm_hit[0])
+            else:
+                tm_hits = tm_hits[0]
+
+            context = {'tm_hits': tm_hits}
+
+            return render(request, 'tm_hits.html', context)
+
+        else:
+            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            paragraphs = (paragraph for paragraph in bf.paragraphs)
+            segments = []
+            for paragraph in paragraphs:
+                for segment in paragraph:
+                    source_segment = segment_to_html(segment[0])
+                    target_segment = segment_to_html(segment[2])
+                    if segment[1].text is not None:
+                        segment_status = segment[1].text.lower()
+                    else:
+                        segment_status = ''
+                    paragraph_no = segment[3]
+                    segment_no = segment[4]
+
+                    segment = {
+                        'source': source_segment,
+                        'target': target_segment,
+                        'status': segment_status,
+                        'paragraph_no': paragraph_no,
+                        'segment_no': segment_no,
+                    }
+
+                    segments.append(segment)
+
+            context = {
+
+                'download_url': reverse('download-target-file', args=(user_id, project_id, source_file)),
+                'project_url': user_project.get_absolute_url(),
+                'segments': segments,
+                'tm': user_project.translation_memory,
+            }
+
+            return render(request, 'bilingual_file.html', context)
 
 
 @login_required()
@@ -282,7 +307,7 @@ def project(request, user_id, project_id):
 
 
 @login_required()
-def translation_memory(request, user_id, tm_id): # TODO: Allow assigned translators to look segments ups.
+def translation_memory(request, user_id, tm_id):
     assert user_id == request.user.id
     user_tm = TranslationMemory.objects.get(id=tm_id)
     assert user_tm.user == request.user
