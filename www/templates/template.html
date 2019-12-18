@@ -21,7 +21,7 @@
         </nav>
         <div id="sign-in-out">
             {% if request.user.is_authenticated %}
-            <h4><a href="{% url 'user-page' request.user.username %}">{{request.user.username}}</a> | <a href="{% url 'logout' %}">Log Out</a></h4>
+            <h4><a href="{% url 'user-page' request.user.username %}">{{ request.user.username }}</a> | <a href="{% url 'logout' %}">Log Out</a></h4>
             {% else %}
             <h4><a href="{% url 'login' %}">Log In</a> | <a href="{% url 'register' %}">Register</a></h4>
             {% endif %}

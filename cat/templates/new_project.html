@@ -14,7 +14,7 @@
     <main id="new-project">
         {% if errors %}
             {% for error in errors %}
-                {{error}}
+                {{ error }}
             {% endfor %}
         {% endif %}
         <form method="POST" enctype="multipart/form-data">
@@ -24,24 +24,24 @@
                     <th colspan="2"><h2>New Project</h2></th>
                 </tr>
                 <tr>
-                    <th class="form-label">{{form.title.label_tag}}</th>
-                    <td>{{form.title}}</td>
+                    <th class="form-label">{{ form.title.label_tag }}</th>
+                    <td>{{ form.title }}</td>
                 </tr>
                 <tr>
-                    <th class="form-label">{{form.source_language.label_tag}}</th>
-                    <td>{{form.source_language}}</td>
+                    <th class="form-label">{{ form.source_language.label_tag }}</th>
+                    <td>{{ form.source_language }}</td>
                 </tr>
                 <tr>
-                    <th class="form-label">{{form.target_language.label_tag}}</th>
-                    <td>{{form.target_language}}</td>
+                    <th class="form-label">{{ form.target_language.label_tag }}</th>
+                    <td>{{ form.target_language }}</td>
                 </tr>
                 <tr>
-                    <th class="form-label">{{form.translation_memory.label_tag}}</th>
-                    <td>{{form.translation_memory}}</td>
+                    <th class="form-label">{{ form.translation_memory.label_tag }}</th>
+                    <td>{{ form.translation_memory }}</td>
                 </tr>
                 <tr>
-                    <th class="form-label">{{form.source_files.label_tag}}</th>
-                    <td id="upload">{{form.source_files}}</td>
+                    <th class="form-label">{{ form.source_files.label_tag }}</th>
+                    <td id="upload">{{ form.source_files }}</td>
                 </tr>
                 <tr>
                     <th></th>

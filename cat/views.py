@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse, redirect
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
@@ -13,75 +13,16 @@ from lxml import etree
 
 from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
+from toraman.utils import html_to_segment, segment_to_html
 
+from .decorators import permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
 from .models import Project, TranslationMemory
 # Create your views here.
 
-def html_to_segment(source_or_target_segment, segment_designation):
-    segment = re.findall(r'<tag[\s\S]+?class="([\s\S]+?)">([\s\S]+?)</tag>|([^<^>]+)',
-                        source_or_target_segment)
-
-    segment_xml = etree.Element('{{{0}}}{1}'.format(nsmap['toraman'], segment_designation),
-                                nsmap=nsmap)
-    for element in segment:
-        if element[0]:
-            tag = element[0].split()
-            tag.insert(0, element[1][len(tag[0]):])
-            segment_xml.append(etree.Element('{{{0}}}{1}'.format(nsmap['toraman'], tag[1])))
-            segment_xml[-1].attrib['no'] = tag[0]
-            if len(tag) > 2:
-                segment_xml[-1].attrib['type'] = tag[2]
-        elif element[2]:
-            segment_xml.append(etree.Element('{{{0}}}text'.format(nsmap['toraman'])))
-            segment_xml[-1].text = element[2]
-
-    return segment_xml
-
-
-def segment_to_html(source_or_target_segment):
-    segment_html = ''
-    for sub_elem in source_or_target_segment:
-        if sub_elem.tag.endswith('}text'):
-            segment_html += escape(sub_elem.text)
-        else:
-            tag = etree.Element('tag')
-            tag.attrib['contenteditable'] = 'false'
-            tag.attrib['class'] = sub_elem.tag.split('}')[-1]
-            tag.text = tag.attrib['class']
-            if 'type' in sub_elem.attrib:
-                if sub_elem.attrib['type'] == 'beginning' or sub_elem.attrib['type'] == 'end':
-                    tag.attrib['class'] += ' ' + sub_elem.attrib['type']
-                else:
-                    tag.attrib['class'] += ' ' + 'standalone'
-            else:
-                tag.attrib['class'] += ' ' + 'standalone'
-
-            if 'no' in sub_elem.attrib:
-                tag.text += sub_elem.attrib['no']
-
-            segment_html += etree.tostring(tag).decode()
-
-    return segment_html
-
-
-@login_required()
+@project_access
 def bilingual_file(request, user_id, project_id, source_file):
-    try:
-        user_project = Project.objects.get(id=project_id)
-    except Project.DoesNotExist:
-        response = HttpResponse('Project does not exist.')
-        response.status_code = 404
-
-        return response
-
-    if not user_project.user == request.user and not user_project.translator == request.user:
-        response = HttpResponse('You aren\'t authorised to work on this project.')
-        response.status_code = 403
-
-        return response
-
-    bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+    user_project = Project.objects.get(id=project_id)
 
     if request.method == 'POST':
         source_segment = html_to_segment(request.POST['source_segment'], 'source')
@@ -90,59 +31,84 @@ def bilingual_file(request, user_id, project_id, source_file):
         paragraph_no = int(request.POST['paragraph_no'])
         segment_no = int(request.POST['segment_no'])
 
-        bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no)
+        bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+        bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no, str(request.user.id))
         bf.save(user_project.get_source_dir())
 
         if segment_status == 'Translated' and user_project.translation_memory is not None:
             user_translation_memory = TM(user_project.translation_memory.get_tm_path(),
-                                                user_project.translation_memory.source_language,
-                                                user_project.translation_memory.target_language)
+                                        user_project.translation_memory.source_language,
+                                        user_project.translation_memory.target_language)
 
-            user_translation_memory.submit_segment(source_segment, target_segment)
+            user_translation_memory.submit_segment(source_segment, target_segment, str(request.user.id))
 
         return HttpResponse('Segment #{0} submitted successfully.'.format(segment_no),
                             content_type='text/plain')
 
     else:
-        paragraphs = (paragraph for paragraph in bf.paragraphs)
-        segments = []
-        for paragraph in paragraphs:
-            for segment in paragraph:
-                source_segment = segment_to_html(segment[0])
-                target_segment = segment_to_html(segment[2])
-                if segment[1].text is not None:
-                    segment_status = segment[1].text.lower()
-                else:
-                    segment_status = ''
-                paragraph_no = segment[3]
-                segment_no = segment[4]
+        if request.GET.get('procedure') == 'lookup':
+            source_segment = html_to_segment(request.GET['source_segment'], 'source')
 
-                segment = {
-                    'source': source_segment,
-                    'target': target_segment,
-                    'status': segment_status,
-                    'paragraph_no': paragraph_no,
-                    'segment_no': segment_no,
-                }
+            user_translation_memory = TM(user_project.translation_memory.get_tm_path(),
+                                        user_project.translation_memory.source_language,
+                                        user_project.translation_memory.target_language)
 
-                segments.append(segment)
+            tm_hits = [[], user_translation_memory.lookup(source_segment)]
 
-        context = {
+            for tm_hit in tm_hits[1]:
+                tm_hit = [{}, tm_hit]
 
-            'download_url': reverse('download-target-file', args=(user_id, project_id, source_file)),
-            'project_url': user_project.get_absolute_url(),
-            'segments': segments,
-            'tm': user_project.translation_memory,
-        }
+                tm_hit[0]['levenshtein_ratio'] = '{0}%'.format(int(tm_hit[1][0]*100))
+                tm_hit[0]['source'] = segment_to_html(tm_hit[1][1])
+                tm_hit[0]['target'] = segment_to_html(tm_hit[1][2])
 
-        return render(request, 'bilingual_file.html', context)
+                tm_hits[0].append(tm_hit[0])
+            else:
+                tm_hits = tm_hits[0]
+
+            context = {'tm_hits': tm_hits}
+
+            return render(request, 'tm_hits.html', context)
+
+        else:
+            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            paragraphs = (paragraph for paragraph in bf.paragraphs)
+            segments = []
+            for paragraph in paragraphs:
+                for segment in paragraph:
+                    source_segment = segment_to_html(segment[0])
+                    target_segment = segment_to_html(segment[2])
+                    if segment[1].text is not None:
+                        segment_status = segment[1].text.lower()
+                    else:
+                        segment_status = ''
+                    paragraph_no = segment[3]
+                    segment_no = segment[4]
+
+                    segment = {
+                        'source': source_segment,
+                        'target': target_segment,
+                        'status': segment_status,
+                        'paragraph_no': paragraph_no,
+                        'segment_no': segment_no,
+                    }
+
+                    segments.append(segment)
+
+            context = {
+
+                'download_url': reverse('download-target-file', args=(user_id, project_id, source_file)),
+                'project_url': user_project.get_absolute_url(),
+                'segments': segments,
+                'tm': user_project.translation_memory,
+            }
+
+            return render(request, 'bilingual_file.html', context)
 
 
-@login_required()
+@project_access
 def download_target_file(request, user_id, project_id, source_file):
-    assert user_id == request.user.id
     user_project = Project.objects.get(id=project_id)
-    assert user_project.user == request.user
 
     bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
     bf.generate_target_translation(os.path.join(user_project.get_source_dir(), source_file),
@@ -157,7 +123,7 @@ def download_target_file(request, user_id, project_id, source_file):
     return response
 
 
-@permission_required('cat.add_project', raise_exception=True)
+@permission_required('cat.add_project')
 def new_project(request):
     form = ProjectForm(request.POST or None, request.FILES)
 
@@ -209,7 +175,7 @@ def new_project(request):
         return render(request, 'new_project.html', context)
 
 
-@permission_required('cat.add_translationmemory', raise_exception=True)
+@permission_required('cat.add_translationmemory')
 def new_translation_memory(request):
     form = TranslationMemoryForm(request.POST or None)
 
@@ -239,21 +205,9 @@ def new_translation_memory(request):
     return render(request, 'new_translation_memory.html', context)
 
 
-@login_required()
+@project_access
 def project(request, user_id, project_id):
-    try:
-        user_project = Project.objects.get(id=project_id)
-    except Project.DoesNotExist:
-        response = HttpResponse('Project does not exist.')
-        response.status_code = 404
-
-        return response
-
-    if not user_project.user == request.user and not user_project.translator == request.user:
-        response = HttpResponse('You aren\'t authorised to view this project.')
-        response.status_code = 403
-
-        return response
+    user_project = Project.objects.get(id=project_id)
 
     context = {
         'user_is_pm': request.user.has_perm('cat.change_project'),
@@ -282,7 +236,7 @@ def project(request, user_id, project_id):
 
 
 @login_required()
-def translation_memory(request, user_id, tm_id): # TODO: Allow assigned translators to look segments ups.
+def translation_memory(request, user_id, tm_id):
     assert user_id == request.user.id
     user_tm = TranslationMemory.objects.get(id=tm_id)
     assert user_tm.user == request.user
@@ -317,7 +271,6 @@ def translation_memory(request, user_id, tm_id): # TODO: Allow assigned translat
             return render(request, 'tm_hits.html', context)
 
     return render(request, 'translation_memory.html', context)
-
 
 @login_required()
 def translation_memory_query(request):

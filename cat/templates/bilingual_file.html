@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{source_file}}</title>
+    <title>{{ source_file }}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'cat/bilingual_file.css' %}">
     <script type="text/javascript" src="{% static 'jquery-3.4.0.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'cat/bilingual_file.js' %}"></script>
@@ -11,12 +11,12 @@
 </head>
 <body>
     <header>
-        <a href="{{project_url}}"><button id="back">Back</button></a>
-        <a href="{{download_url}}"><button id="generate-target-translation">Download Translation</button></a>
+        <a href="{{ project_url }}"><button id="back">Back</button></a>
+        <a href="{{ download_url }}"><button id="generate-target-translation">Download Translation</button></a>
     </header>
     <main>
         <div id="tm-hits">
-            <a id="tm-url" href="{{tm.get_absolute_url}}"><p>TM: {{tm.title}}</p></a>
+            <a id="tm-url" href="{{ tm.get_absolute_url }}"><p>TM: {{ tm.title }}</p></a>
             <table id="tm-hits">
                 <tr class="segment na odd">
                         <td class="details">
@@ -30,13 +30,13 @@
         {% csrf_token %}
         <table>
         {% for segment in segments %}
-            <tr class="segment {% cycle 'odd' 'even' %} {{segment.status}}">
+            <tr class="segment {% cycle 'odd' 'even' %} {{ segment.status }}">
                 <td class="details">
-                    <p class="paragraph-no">{{segment.paragraph_no}}</p>
-                    <p class="segment-no">{{segment.segment_no}}</p>
+                    <p class="paragraph-no">{{ segment.paragraph_no }}</p>
+                    <p class="segment-no">{{ segment.segment_no }}</p>
                 </td>
-                <td class="source">{{segment.source|safe}}</td>
-                <td class="target" contenteditable="true">{{segment.target|safe}}</td>
+                <td class="source">{{ segment.source|safe }}</td>
+                <td class="target" contenteditable="true">{{ segment.target|safe }}</td>
             </tr>
         {% endfor %}
         </table>
