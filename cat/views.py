@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse, redirect
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
@@ -15,25 +15,14 @@ from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
 from toraman.utils import html_to_segment, segment_to_html
 
+from .decorators import permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
 from .models import Project, TranslationMemory
 # Create your views here.
 
-@login_required()
+@project_access
 def bilingual_file(request, user_id, project_id, source_file):
-    try:
-        user_project = Project.objects.get(id=project_id)
-    except Project.DoesNotExist:
-        response = HttpResponse('Project does not exist.')
-        response.status_code = 404
-
-        return response
-
-    if not user_project.user == request.user and not user_project.translator == request.user:
-        response = HttpResponse('You aren\'t authorised to work on this project.')
-        response.status_code = 403
-
-        return response
+    user_project = Project.objects.get(id=project_id)
 
     if request.method == 'POST':
         source_segment = html_to_segment(request.POST['source_segment'], 'source')
@@ -117,11 +106,9 @@ def bilingual_file(request, user_id, project_id, source_file):
             return render(request, 'bilingual_file.html', context)
 
 
-@login_required()
+@project_access
 def download_target_file(request, user_id, project_id, source_file):
-    assert user_id == request.user.id
     user_project = Project.objects.get(id=project_id)
-    assert user_project.user == request.user
 
     bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
     bf.generate_target_translation(os.path.join(user_project.get_source_dir(), source_file),
@@ -136,7 +123,7 @@ def download_target_file(request, user_id, project_id, source_file):
     return response
 
 
-@permission_required('cat.add_project', raise_exception=True)
+@permission_required('cat.add_project')
 def new_project(request):
     form = ProjectForm(request.POST or None, request.FILES)
 
@@ -188,7 +175,7 @@ def new_project(request):
         return render(request, 'new_project.html', context)
 
 
-@permission_required('cat.add_translationmemory', raise_exception=True)
+@permission_required('cat.add_translationmemory')
 def new_translation_memory(request):
     form = TranslationMemoryForm(request.POST or None)
 
@@ -218,21 +205,9 @@ def new_translation_memory(request):
     return render(request, 'new_translation_memory.html', context)
 
 
-@login_required()
+@project_access
 def project(request, user_id, project_id):
-    try:
-        user_project = Project.objects.get(id=project_id)
-    except Project.DoesNotExist:
-        response = HttpResponse('Project does not exist.')
-        response.status_code = 404
-
-        return response
-
-    if not user_project.user == request.user and not user_project.translator == request.user:
-        response = HttpResponse('You aren\'t authorised to view this project.')
-        response.status_code = 403
-
-        return response
+    user_project = Project.objects.get(id=project_id)
 
     context = {
         'user_is_pm': request.user.has_perm('cat.change_project'),
@@ -296,7 +271,6 @@ def translation_memory(request, user_id, tm_id):
             return render(request, 'tm_hits.html', context)
 
     return render(request, 'translation_memory.html', context)
-
 
 @login_required()
 def translation_memory_query(request):
