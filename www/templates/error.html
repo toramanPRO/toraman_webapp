@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            * {
+                all: unset;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            head {
+                display: none;
+            }
+            body {
+                display: grid;
+                grid-gap: 0;
+                grid-template-columns: 1fr 18fr 1fr;
+            }
+            h1 {
+                display: block;
+                font-size: 150px;
+                font-weight: 800;
+                text-align: center;
+            }
+            main {
+                display: inline-grid;
+                grid-column: 2;
+            }
+            p {
+                display: block;
+                font-size: 20px;
+                text-align: center;
+            }
+        </style>
+        <title>{{ status_code }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <main>
+            <h1>{{ status_code }}</h1>
+            <p>{{ error_message }}</p>
+        </main>
+    </body>
+</html>
