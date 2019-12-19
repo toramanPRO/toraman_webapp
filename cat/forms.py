@@ -11,7 +11,7 @@ class ProjectForm(forms.ModelForm):
         fields = ('title', 'source_language', 'target_language')
 
     source_files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
-    translation_memory = forms.CharField(widget=forms.Select)
+    translation_memory = forms.CharField(widget=forms.Select(attrs={'required': True}))
 
 
 class TranslationMemoryForm(forms.ModelForm):
