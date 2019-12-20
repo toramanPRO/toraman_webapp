@@ -140,9 +140,20 @@ def new_project(request):
                 if not uploaded_file.name.lower().endswith(('.docx', '.odt')):
                     context['errors'].append('File format of "{0}" is not supported.'.format(uploaded_file.name))
 
-            user_translation_memory = TranslationMemory.objects.get(id=form.cleaned_data['translation_memory'])
-            if user_translation_memory.user != request.user:
-                context['errors'].append('This Translation Memory belongs to someone else.')
+            user_tm_id = form.cleaned_data['translation_memory']
+            if user_tm_id.isdigit():
+                try:
+                    user_translation_memory = TranslationMemory.objects.get(id=user_tm_id)
+                    if user_translation_memory.user != request.user:
+                        context['errors'].append('This translation memory belongs to someone else.')
+                    else:
+                        if (form.cleaned_data['source_language'] != user_translation_memory.source_language
+                        or form.cleaned_data['target_language'] != user_translation_memory.target_language):
+                            context['errors'].append('The language combination of the project and the translation memory do not match.')
+                except TranslationMemory.DoesNotExist:
+                    context['errors'].append('This translation memory does not exist.')
+            else:
+                context['errors'].append('Please select a translation memory.')
 
             if context['errors']:
                 return render(request, 'new_project.html', context)
@@ -271,6 +282,7 @@ def translation_memory(request, user_id, tm_id):
             return render(request, 'tm_hits.html', context)
 
     return render(request, 'translation_memory.html', context)
+
 
 @login_required()
 def translation_memory_query(request):
