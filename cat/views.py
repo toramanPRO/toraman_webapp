@@ -211,7 +211,7 @@ def new_translation_memory(request):
                     user_translation_memory.source_language,
                     user_translation_memory.target_language)
 
-            return redirect('homepage')
+            return redirect(user_translation_memory)
 
     return render(request, 'new_translation_memory.html', context)
 
