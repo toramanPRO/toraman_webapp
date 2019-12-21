@@ -70,6 +70,9 @@ class TranslationMemory(models.Model):
         verbose_name = 'Translation Memory'
         verbose_name_plural = 'Translation Memories'
 
+    def __str__(self):
+        return '{0}-{1}>{2}-{3}'.format(self.id, self.source_language, self.target_language, self.title)
+
     def get_absolute_url(self):
         return reverse('translation-memory', args=[str(self.user.id), str(self.id)])
 
@@ -86,6 +89,9 @@ class Project(models.Model):
     translation_memory = models.ForeignKey(TranslationMemory, blank=True, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_posted_the_project')
     translator = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, related_name='user_who_was_assigned_the_project')
+
+    def __str__(self):
+        return '{0}-{1}>{2}-{3}'.format(self.id, self.source_language, self.target_language, self.title)
 
     def get_absolute_url(self):
         return reverse('project', args=[str(self.user.id), str(self.id)])
