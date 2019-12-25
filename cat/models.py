@@ -96,6 +96,12 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse('project', args=[str(self.user.id), str(self.id)])
+    
+    def get_file_count(self):
+        try:
+            return len(self.source_files.split(';'))
+        except ValueError:
+            return 'N/A'
 
     def get_project_path(self):
         return os.path.join(settings.USER_PROJECT_ROOT, str(self.user.id), str(self.id))
