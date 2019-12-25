@@ -3,17 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
-import copy
-import re
-import os
-import time
+import copy, json, os, re, time
 
 from html import escape
 from lxml import etree
 
 from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
-from toraman.utils import html_to_segment, segment_to_html
+from toraman.utils import html_to_segment, segment_to_html, analyse_files
 
 from .decorators import permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
@@ -174,9 +171,19 @@ def new_project(request):
                         for line in uploaded_file:
                             output_file.write(line)
 
+                bf_paths = []
                 for source_file in user_project.source_files.split(';'):
                     sf = SourceFile(os.path.join(source_files_dir, source_file))
                     sf.write_bilingual_file(source_files_dir)
+                    bf_paths.append(os.path.join(source_files_dir, source_file + '.xml'))
+
+                analysis_report = analyse_files(bf_paths,
+                                                user_project.translation_memory.get_tm_path(),
+                                                user_project.source_language,
+                                                user_project.target_language)
+
+                user_project.analysis_report = json.dumps(analysis_report)
+                user_project.save()
 
                 return redirect(user_project)
         else:

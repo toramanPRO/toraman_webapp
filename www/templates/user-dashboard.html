@@ -22,7 +22,7 @@
                     <h4><a href="{{ user_project.get_absolute_url }}">{{ user_project.title }}</a></h4>
                     <p>{{ user_project.source_language }} > {{ user_project.target_language }}</p>
                     <p>N/A File(s)</p>
-                    <p>Word Count: Not Yet Implemented</p>
+                    <p>Word Count: {{ user_project.get_word_count }}</p>
                     <p>Progress: Not Yet Implemented</p>
                 </div>
                 {% endfor %}

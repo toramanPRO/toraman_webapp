@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
-import os
+import json, os
 # Create your models here.
 
 LANGUAGE_CODES = (('aa', 'Afar'), ('ab', 'Abkhazian'), ('ae', 'Avestan'), ('af', 'Afrikaans'),
@@ -85,6 +85,7 @@ class Project(models.Model):
     source_language = models.CharField(max_length=2, choices=LANGUAGE_CODES)
     target_language = models.CharField(max_length=2, choices=LANGUAGE_CODES)
     source_files = models.CharField(max_length=500, blank=True, null=True)
+    analysis_report = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     translation_memory = models.ForeignKey(TranslationMemory, blank=True, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_who_posted_the_project')
@@ -104,3 +105,10 @@ class Project(models.Model):
 
     def get_target_dir(self):
         return os.path.join(settings.USER_PROJECT_ROOT, str(self.user.id), str(self.id), self.target_language)
+
+    def get_word_count(self):
+        try:
+            analysis_report = json.loads(str(self.analysis_report))
+            return analysis_report['Project Total']['Total']
+        except ValueError:
+            return 'N/A'
