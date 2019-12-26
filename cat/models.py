@@ -76,6 +76,18 @@ class TranslationMemory(models.Model):
     def get_absolute_url(self):
         return reverse('translation-memory', args=[str(self.user.id), str(self.id)])
 
+    def get_source_language(self):
+        try:
+            return dict(LANGUAGE_CODES)[self.source_language]
+        except ValueError:
+            return 'N/A'
+
+    def get_target_language(self):
+        try:
+            return dict(LANGUAGE_CODES)[self.target_language]
+        except ValueError:
+            return 'N/A'
+
     def get_tm_path(self):
         return os.path.join(settings.USER_TM_ROOT, str(self.user.id), str(self.id), self.title + '.ttm')
 
