@@ -12,17 +12,19 @@
 
 {% block body %}
     <main id="new-project">
-        {% if errors %}
-            {% for error in errors %}
-                {{ error }}
-            {% endfor %}
-        {% endif %}
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <table>
+            <table class="form">
                 <tr>
-                    <th colspan="2"><h2>New Project</h2></th>
+                    <th class="form-title" colspan="2"><h2>New Project</h2></th>
                 </tr>
+                {% if errors %}
+                    {% for error in errors %}
+                    <tr>
+                        <td class="error" colspan="2"><p>{{ error }}</p></td class="error" colspan="2">
+                    </tr>
+                    {% endfor %}
+                {% endif %}
                 <tr>
                     <th class="form-label">{{ form.title.label_tag }}</th>
                     <td>{{ form.title }}</td>
@@ -45,7 +47,7 @@
                 </tr>
                 <tr>
                     <th></th>
-                    <td><button type="submit">Submit</button></td>
+                    <td><input type="submit" value="Submit"/></td>
                 </tr>
             </table>
         </form>

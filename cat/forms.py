@@ -2,7 +2,9 @@ from django import forms
 from .models import Project, TranslationMemory
 
 class AssignProjectToTranslatorForm(forms.Form):
-    translator = forms.CharField(label='Translator\'s Username', required=True)
+    translator = forms.CharField(label='Translator\'s Username',
+                                widget=forms.TextInput(attrs={'placeholder': 'Translator\'s Username'}),
+                                required=True)
 
 
 class ProjectForm(forms.ModelForm):

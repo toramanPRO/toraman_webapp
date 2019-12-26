@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-    <main>
+    <main id="user-dashboard">
         <div id="user-projects">
             <h1>Projects</h1>
             {% if user_can_add_projects %}
@@ -18,36 +18,40 @@
             {% endif %}
             {% if user_projects %}
                 {% for user_project in user_projects %}
-                <div class="user-project">
-                    <h4><a href="{{ user_project.get_absolute_url }}">{{ user_project.title }}</a></h4>
-                    <p>{{ user_project.source_language }} > {{ user_project.target_language }}</p>
-                    <p>{{ user_project.get_file_count }} File(s)</p>
-                    <p>Word Count: {{ user_project.get_word_count }}</p>
-                    <p>Progress: Not Yet Implemented</p>
-                </div>
+                <a href="{{ user_project.get_absolute_url }}">
+                    <div class="user-project">
+                        <h4>{{ user_project.title }}</h4>
+                        <p>{{ user_project.get_source_language }} to {{ user_project.get_target_language }}</p>
+                        <p>{{ user_project.get_file_count }} File(s)</p>
+                        <p>Word Count: {{ user_project.get_word_count }}</p>
+                        <p>Progress: Not Yet Implemented</p>
+                    </div>
+                </a>
                 {% endfor %}
             {% else %}
                 {% if not user_can_add_projects %}
                 <div class="user-project">
                     <h4>You haven't been assigned a project yet.</h4>
                 </div>
-                {% endif %}    
+                {% endif %}
             {% endif %}
         </div>
         {% if user_can_add_tms %}
         <div id="user-tms">
             <h1>Translation Memories</h1>
             <a href="{% url 'new-translation-memory' %}">
-                <div class="new-project user-project">
+                <div class="new-tm user-tm">
                     <h2>+</h2>
                 </div>
             </a>
             {% if user_tms %}
                 {% for user_tm in user_tms %}
-                <div class="user-tm">
-                    <h4><a href="{{ user_tm.get_absolute_url }}">{{ user_tm.title }}</a></h4>
-                    <p>{{ user_tm.source_language }} > {{ user_tm.target_language }}</p>
-                </div>
+                <a href="{{ user_tm.get_absolute_url }}">
+                    <div class="user-tm">
+                        <h4>{{ user_tm.title }}</h4>
+                        <p>{{ user_tm.get_source_language }} to {{ user_tm.get_target_language }}</p>
+                    </div>
+                </a>
                 {% endfor %}
             {% endif %}
         </div>

@@ -9,7 +9,7 @@
     <main>
         <div><h2>{{ user_tm.title }}</h2></div>
         <br>
-        <div><h4>{{ user_tm.source_language }} > {{ user_tm.target_language }}</h4></div>
+        <div><h4>{{ user_tm.get_source_language }} to {{ user_tm.get_target_language }}</h4></div>
         <br>
     </main>
 {% endblock %}

@@ -1,187 +1,194 @@
-a, body, button, div, form, h1, h2, h3, h4, header, input, label, li, nav, p, td, th, tr, ul {
-    background-color: #FFFFFF;
-    border: none;
+* {
+    all: unset;
     box-sizing: border-box;
-    color: #000;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    font-weight: 100;
-    list-style-type: none;
-    margin: 0;
-    outline: none;
-    padding: 0;
-    text-decoration: none;
 }
-
+head {
+    display: none;
+}
 body {
-    min-width: 600px;
+    min-width: 400px;
 }
-
-button {
-    background-color: #126868;
-    border: 1px solid #FFF;
-    border-radius: 5px;
-    color: #FFF;
-    font-weight: 800;
-    outline: none;
-    padding: 7px;
+a {
+    cursor: pointer;
+}
+button, input {
     transition: 0.4s;
 }
-
-button:disabled {
-    background-color: rgb(187, 192, 191);
-}
-
-button:hover {
-    background-color: #FFF;
-    border: 1px solid #126868;
-    color: #126868;;
-}
-
-button:active {
-    background-color: #126868;
-    border: 1px solid #126868;
-    color: #FFF;;
-}
-
-div.new-project {
-    text-align: center;
-}
-
-div.new-project:hover {
-    border: 1px solid #126868;
-    transition: 0.4s;
-}
-
-div.new-project:hover h2 {
-    color: #126868;
-    transition: 0.4s;
-}
-
-div.user-project, div.user-tm {
-    border: 1px solid #FFF;
-    background-color: rgb(251, 251, 251);
-    border-radius: 5px;
-    margin-bottom: 10.5px;
-    padding: 7px;
-    vertical-align: top;
-}
-
-div#user-projects {
-    display: inline-block;
-    vertical-align: top;
-    width: 59%;
-}
-
-div#user-tms {
-    display: inline-block;
-    vertical-align: top;
-    width: 40%;
-}
-
 h1 {
+    color: inherit;
+    display: block;
     font-size: 30px;
+    font-weight: 800;
+    padding: 15px 7.5px;
 }
-
 h2 {
-    font-size: 24px;
+    color: inherit;
+    display: block;
+    font-size: 25px;
+    font-weight: 800;
+    padding: 12.50px 6.25px;
 }
-
-h4, h4 a {
-    font-size: 18px;
+h4 {
+    color: inherit;
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    padding: 10px 5px;
 }
-
 header {
     background-color: #126868;
-    padding: 7px;
-}
-
-header h4 a, header h4, header p {
     color: #FFFFFF;
-    font-weight: 600;
+    display: block;
 }
-
-header div#sign-in-out {
-    background-color: #126868;
-    float: right;
-}
-
-header div h4, header div a {
-    background-color: #126868;
-}
-
-input {
-    border: 0.5px solid #121212;
-    border-radius: 5px;
-    padding: 3.5px;
-}
-
-input:focus {
-    border: 0.5px solid #126868;
-}
-
-main {
-    padding: 1%;
-    vertical-align: top;
-}
-
-main#new-project {
-    background-color: rgb(251, 251, 251);
-    border-radius: 5px;
-    margin: 1.5% auto;
-    min-width: 350px;
-    padding: 1%;
-    align-content: center;
-    width: 30%;
-}
-
-nav {
-    background-color: #126868;
+header div, header nav {
     display: inline-block;
 }
-
-nav h4, nav h4 a {
-    background-color: #126868;
+header div {
+    float: right;
 }
-
+input {
+    border: 1px solid #000;
+    border-radius: 4px;
+    margin: 4px;
+    padding: 4px;
+}
+input:focus {
+    border: 1px solid #126868;
+}
+input[type=submit] {
+    background-color: #126868;
+    border: 1px solid #FFFFFF;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 4px;
+}
+input[type=submit]:active {
+    border: 1px solid #126868;
+}
+input[type=submit]:hover {
+    background-color: #FFFFFF;
+    color: #126868;
+}
+main {
+    min-width: 400px;
+}
+main#homepage {
+    display: block;
+    margin: auto;
+    width: 80%;
+}
+main#new-project {
+    display: block;
+    margin: auto;
+    width: 60%;
+}
+main#project-view div {
+    border: 1px solid #126868;
+    border-radius: 4px;
+    display: block;
+    grid-column: 2;
+    margin: auto;
+    padding: 4px;
+    overflow: stretch;
+    width: 50%;
+}
+main#project-view div#project-pm-settings, main#project-view div#project-report {
+    display: None;
+}
+main#user-dashboard {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+main#user-dashboard div.new-project, main#user-dashboard div.new-tm {
+    text-align: center;
+    transition: 0.4s;
+}
+main#user-dashboard div.new-project:hover, main#user-dashboard div.new-tm:hover {
+    color: #126868;
+}
+main#user-dashboard div.user-project, main#user-dashboard div.user-tm {
+    border: 1px solid #126868;
+    border-radius: 4px;
+    display: block;
+    margin: 4px;
+    padding: 4px;
+}
+nav#project-view {
+    color: #126868;
+    display: block;
+    text-align: center;
+}
+nav#project-view button:hover, nav#project-view button.selected {
+    background-color: #126868;
+    color: #FFFFFF;
+}
+p {
+    color: inherit;
+    display: block;
+    font-size: 16px;
+    padding: 4px;
+}
 p#version-number {
     text-align: right;
 }
-
+select {
+    border: 1px solid #126868;
+    margin: 4px;
+    padding: 4px;
+    width: 200px;
+}
 table {
-    margin: 0 auto;
+    border-collapse: collapse;
+    display: table;
+    padding: 4px;
+    table-layout: fixed;
+    width: 100%;
+    word-break: break-all;
 }
-
-table#shortcuts {
-    display: block;
-    margin: 14px;
-}
-
-table#shortcuts td, table#shortcuts th {
-    border: 1px solid #999;
-    padding: 14px;
-}
-
-table#shortcuts th {
-    text-align: center;
-}
-
-table#shortcuts th#title {
+table.form td, table#shortcuts td {
     text-align: left;
 }
-
-table h2 {
-    margin-bottom: 3.5px;
-}
-
-table td, table th {
-    padding: 1.75px 0;
-}
-
-table td#upload input {
-    border: 0;
-}
-
-table th.form-label {
+table.form th, table#shortcuts th {
     text-align: right;
+}
+table.form th.form-title, table#shortcuts th.title {
+    text-align: left;
+}
+tbody {
+    display: table;
+    width: 100%;
+}
+td {
+    text-align: right;
+}
+td.error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+td, th {
+    display: table-cell;
+    padding: 4px;
+    vertical-align: middle;
+}
+th {
+    font-weight: 600;
+    text-align: center;
+}
+tr {
+    display: table-row;
+}
+ul {
+    list-style-type: disc;
+}
+ul li {
+    list-style-position: inside;
+    display:list-item;
+    padding-left: 5px;
+}
+@media only screen and (max-width: 600px) {
+    main#project-view div {
+      width: 90%;
+    }
 }
