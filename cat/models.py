@@ -97,6 +97,25 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse('project', args=[str(self.user.id), str(self.id)])
 
+    def get_analysis_report_as_list(self):
+        try:
+            project_report = []
+            analysis_report = json.loads(self.analysis_report)
+            for source_file in self.source_files.split(';'):
+                file_report = [source_file]
+                for key in analysis_report[source_file]:
+                    file_report.append(analysis_report[source_file][key])
+                project_report.append(file_report)
+            else:
+                total_report = ['Project Total']
+                for key in analysis_report['Project Total']:
+                    total_report.append(analysis_report['Project Total'][key])
+                project_report.append(total_report)
+            
+            return project_report
+        except ValueError:
+            return ['N/A']
+
     def get_file_count(self):
         try:
             return len(self.source_files.split(';'))
