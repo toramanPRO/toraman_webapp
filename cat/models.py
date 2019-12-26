@@ -96,7 +96,7 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse('project', args=[str(self.user.id), str(self.id)])
-    
+
     def get_file_count(self):
         try:
             return len(self.source_files.split(';'))
@@ -109,8 +109,20 @@ class Project(models.Model):
     def get_source_dir(self):
         return os.path.join(settings.USER_PROJECT_ROOT, str(self.user.id), str(self.id), self.source_language)
 
+    def get_source_language(self):
+        try:
+            return dict(LANGUAGE_CODES)[self.source_language]
+        except ValueError:
+            return 'N/A'
+
     def get_target_dir(self):
         return os.path.join(settings.USER_PROJECT_ROOT, str(self.user.id), str(self.id), self.target_language)
+
+    def get_target_language(self):
+        try:
+            return dict(LANGUAGE_CODES)[self.target_language]
+        except ValueError:
+            return 'N/A'
 
     def get_word_count(self):
         try:
