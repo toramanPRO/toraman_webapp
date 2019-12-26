@@ -3,17 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
-import copy
-import re
-import os
-import time
+import copy, json, os, re, time
 
 from html import escape
 from lxml import etree
 
 from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
-from toraman.utils import html_to_segment, segment_to_html
+from toraman.utils import html_to_segment, segment_to_html, analyse_files
 
 from .decorators import permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
@@ -140,9 +137,20 @@ def new_project(request):
                 if not uploaded_file.name.lower().endswith(('.docx', '.odt')):
                     context['errors'].append('File format of "{0}" is not supported.'.format(uploaded_file.name))
 
-            user_translation_memory = TranslationMemory.objects.get(id=form.cleaned_data['translation_memory'])
-            if user_translation_memory.user != request.user:
-                context['errors'].append('This Translation Memory belongs to someone else.')
+            user_tm_id = form.cleaned_data['translation_memory']
+            if user_tm_id.isdigit():
+                try:
+                    user_translation_memory = TranslationMemory.objects.get(id=user_tm_id)
+                    if user_translation_memory.user != request.user:
+                        context['errors'].append('This translation memory belongs to someone else.')
+                    else:
+                        if (form.cleaned_data['source_language'] != user_translation_memory.source_language
+                        or form.cleaned_data['target_language'] != user_translation_memory.target_language):
+                            context['errors'].append('The language combination of the project and the translation memory do not match.')
+                except TranslationMemory.DoesNotExist:
+                    context['errors'].append('This translation memory does not exist.')
+            else:
+                context['errors'].append('Please select a translation memory.')
 
             if context['errors']:
                 return render(request, 'new_project.html', context)
@@ -163,9 +171,19 @@ def new_project(request):
                         for line in uploaded_file:
                             output_file.write(line)
 
+                bf_paths = []
                 for source_file in user_project.source_files.split(';'):
                     sf = SourceFile(os.path.join(source_files_dir, source_file))
                     sf.write_bilingual_file(source_files_dir)
+                    bf_paths.append(os.path.join(source_files_dir, source_file + '.xml'))
+
+                analysis_report = analyse_files(bf_paths,
+                                                user_project.translation_memory.get_tm_path(),
+                                                user_project.source_language,
+                                                user_project.target_language)
+
+                user_project.analysis_report = json.dumps(analysis_report)
+                user_project.save()
 
                 return redirect(user_project)
         else:
@@ -200,7 +218,7 @@ def new_translation_memory(request):
                     user_translation_memory.source_language,
                     user_translation_memory.target_language)
 
-            return redirect('homepage')
+            return redirect(user_translation_memory)
 
     return render(request, 'new_translation_memory.html', context)
 
@@ -271,6 +289,7 @@ def translation_memory(request, user_id, tm_id):
             return render(request, 'tm_hits.html', context)
 
     return render(request, 'translation_memory.html', context)
+
 
 @login_required()
 def translation_memory_query(request):

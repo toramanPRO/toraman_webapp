@@ -1,2 +1,2 @@
 Django==2.2.9
-toraman==0.3.0
+toraman==0.3.1

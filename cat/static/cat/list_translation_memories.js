@@ -1,18 +1,14 @@
 $(document).ready(function() {
-    var source_language = $("input#id_source_language")
-    var target_language = $("input#id_target_language")
+    var source_language = $("select#id_source_language")
+    var target_language = $("select#id_target_language")
     var translation_memory = $("select#id_translation_memory")
 
     source_language.change(function() {
-        if (source_language.val().length == 2 && target_language.val().length == 2) {
-            list_translation_memories()
-        }
+        list_translation_memories()
     })
 
     target_language.change(function() {
-        if (source_language.val().length == 2 && target_language.val().length == 2) {
-            list_translation_memories()
-        }
+        list_translation_memories()
     })
 
     function list_translation_memories() {

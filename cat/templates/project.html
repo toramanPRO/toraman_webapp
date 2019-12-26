@@ -5,41 +5,67 @@
     {{ user_project.title }}
 {% endblock %}
 
+{% block js %}
+    <script type="text/javascript" src="{% static 'jquery-3.4.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'cat/project_navigation.js' %}"></script>
+{% endblock %}
+
 {% block body %}
-    <main>
-        <div><h2>{{ user_project.title }}</h2></div>
-        <br>
-        <div><h4>{{ user_project.source_language }} > {{ user_project.target_language }}</h4></div>
-        <br>
-        <div>
+    <nav id="project-view">
+        <button id="overview" class="selected"><h4>Overview</h4></button>
+        <button id="report"><h4>Report</h4></button>
+        {% if user_is_pm %}
+        <button id="pm-settings"><h4>PM Settings</h4></button>
+        {% endif %}
+    </nav>
+    <main id="project-view">
+        <div id="project-overview">
+            <h4>{{ user_project.title }}</h4>
+            <h4>{{ user_project.get_source_language }} to {{ user_project.get_target_language }}</h4>
             <h4>File(s):</h4>
             <ul id="source-files">
             {% for source_file in source_files %}
-            <li><p>> 
-                <a href="{% url 'bilingual-file'  user_project.user.id user_project.id source_file %}">
-                {{ source_file }}
-                </a>
-            </p></li>
+                <li>
+                    <a href="{% url 'bilingual-file'  user_project.user.id user_project.id source_file %}">
+                    {{ source_file }}
+                    </a>
+                </li>
             {% endfor %}
             </ul>
         </div>
+        <div id="project-report">
+            <table>
+                <tr>
+                    <th>File Name</th>
+                    <th>Repetition</th>
+                    <th>100%</th>
+                    <th>99%-50%</th>
+                    <th>No Match</th>
+                    <th>Total</th>
+                </tr>
+                {% for line in user_project.get_analysis_report_as_list %}
+                <tr>
+                    {% for item in line %}
+                    <td>{{ item }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
         {% if user_is_pm %}
-        <div>
-            <h4>PM Settings:</h4>
+        <div id="project-pm-settings">
             {% if user_project.translator %}
             <p>This project is currently assigned to {{ user_project.translator.username }}.</p>
             {% else %}
-            <p>This project hasn't been assigned to a translator yet. Use the form below to do so.</p>
+            <p>This project hasn't been assigned to a translator yet. Use this form to do so.</p>
             <form method="POST">
-                {% csrf_token %}
-                <div>
-                    {% if error %}
-                    <p>{{ error }}</p>
-                    {% endif %}
-                    <p>{{ form.translator.label }}: {{ form.translator }}</p>
-                    <br>
-                    <button type="submit">Assign</button>
-                </div>
+            {% csrf_token %}
+                {% if error %}
+                <p>{{ error }}</p>
+                {% endif %}
+                {{ form.translator }}
+                <br>
+                <input type="submit" value="Assign"/>
             </form>
             {% endif %}
         </div>
