@@ -28,7 +28,9 @@ $(document).ready(function() {
                     || e.key == "V"
                     || e.key == "v"
                     || e.key == "Z"
-                    || e.key == "z") {
+                    || e.key == "z"
+                    || e.key == "ArrowLeft"
+                    || e.key == "ArrowRight") {
             } else {
                 e.preventDefault()
             }
@@ -73,6 +75,9 @@ $(document).ready(function() {
         var paragraph_no = target_cell.closest("tr").find("td.details p.paragraph-no").text()
         var segment_no = target_cell.closest("tr").find("td.details p.segment-no").text()
 
+        var segment_no_list = []
+        var exact_segment
+
         if (segment_status == "Translated") {
             target_cell.closest("tr").addClass("translated")
             target_cell.closest("tr").removeClass("draft")
@@ -88,8 +93,19 @@ $(document).ready(function() {
                 "paragraph_no": paragraph_no,
                 "segment_no": segment_no,
             },
-            function() {
+            function(data) {
                 console.log("Segment #" + segment_no + " submitted successfully.")
+                if (segment_status == "Translated" && data != "") {
+                    segment_no_list = data.split(', ')
+                    for (i = 0; i < segment_no_list.length; i++) {
+                        exact_segment = $("tr.segment#" + segment_no_list[i])
+                        exact_segment.find("td.target").html(target_segment)
+                        exact_segment.addClass("translated")
+                    }
+                }
+                if (segment_status == "Translated") {
+                    target_cell.closest("tr").nextAll().not(".translated").first().find("td.target").focus()
+                }
             }
         ).fail(function() {
             console.log("Segment #" + segment_no + " submission failed.")
@@ -99,8 +115,5 @@ $(document).ready(function() {
             }
             target_cell.closest("tr").addClass("draft")
         })
-        if (segment_status == "Translated") {
-            target_cell.closest("tr").next().find("td.target").focus()
-        }
     }
 });
