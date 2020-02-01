@@ -30,6 +30,12 @@ button {
     transition: 0.4s;
 }
 
+button:disabled, button:disabled:hover {
+    background-color: rgb(150, 150, 150);
+    border: 1px solid rgb(75, 75, 75);
+    color: rgb(75, 75, 75);
+}
+
 button:hover {
     background-color: #126868;
     border: 1px solid rgb(255, 255, 255);
@@ -92,6 +98,14 @@ td.details {
 
 td.details p.paragraph-no {
     display: none;
+}
+
+td.merge-selector {
+    cursor: pointer;
+}
+
+td.merge-selector.selected {
+    background-color: #126868;
 }
 
 td.target:focus {

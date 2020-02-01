@@ -22,25 +22,35 @@ def bilingual_file(request, user_id, project_id, source_file):
     user_project = Project.objects.get(id=project_id)
 
     if request.method == 'POST':
-        source_segment = html_to_segment(request.POST['source_segment'], 'source')
-        target_segment = html_to_segment(request.POST['target_segment'], 'target')
-        segment_status = request.POST['segment_status']
-        paragraph_no = int(request.POST['paragraph_no'])
-        segment_no = int(request.POST['segment_no'])
+        if request.POST.get('procedure') == 'merge':
+            list_of_segments = request.POST['selected_segments'].split(',')
 
-        bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
-        segment_no_list = bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no, str(request.user.id))
-        bf.save(user_project.get_source_dir())
+            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            bf.merge_segments(list_of_segments)
+            bf.save(user_project.get_source_dir())
 
-        if segment_status == 'Translated' and user_project.translation_memory is not None:
-            user_translation_memory = TM(user_project.translation_memory.get_tm_path(),
-                                        user_project.translation_memory.source_language,
-                                        user_project.translation_memory.target_language)
+            return HttpResponse('Segments merged.', content_type='text/plain')
 
-            user_translation_memory.submit_segment(source_segment, target_segment, str(request.user.id))
+        else:
+            source_segment = html_to_segment(request.POST['source_segment'], 'source')
+            target_segment = html_to_segment(request.POST['target_segment'], 'target')
+            segment_status = request.POST['segment_status']
+            paragraph_no = int(request.POST['paragraph_no'])
+            segment_no = int(request.POST['segment_no'])
 
-        return HttpResponse(', '.join([str(segment_no) for segment_no in segment_no_list]),
-                            content_type='text/plain')
+            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            segment_no_list = bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no, str(request.user.id))
+            bf.save(user_project.get_source_dir())
+
+            if segment_status == 'Translated' and user_project.translation_memory is not None:
+                user_translation_memory = TM(user_project.translation_memory.get_tm_path(),
+                                            user_project.translation_memory.source_language,
+                                            user_project.translation_memory.target_language)
+
+                user_translation_memory.submit_segment(source_segment, target_segment, str(request.user.id))
+
+            return HttpResponse(', '.join([str(segment_no) for segment_no in segment_no_list]),
+                                content_type='text/plain')
 
     else:
         if request.GET.get('procedure') == 'lookup':
