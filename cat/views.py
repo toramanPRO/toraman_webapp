@@ -134,7 +134,7 @@ def new_project(request):
             uploaded_files = request.FILES.getlist('source_files')
 
             for uploaded_file in uploaded_files:
-                if not uploaded_file.name.lower().endswith(('.docx', '.odt')):
+                if not uploaded_file.name.lower().endswith(('.docx', '.odp', '.ods', '.odt')):
                     context['errors'].append('File format of "{0}" is not supported.'.format(uploaded_file.name))
 
             user_tm_id = form.cleaned_data['translation_memory']
