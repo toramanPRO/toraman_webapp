@@ -27,19 +27,21 @@
                 </tr>
             </table>
         </div>
-        {% csrf_token %}
-        <table>
-        {% for segment in segments %}
-            <tr class="segment {% cycle 'odd' 'even' %} {{ segment.status }}" id="{{ segment.segment_no }}">
-                <td class="details">
-                    <p class="paragraph-no">{{ segment.paragraph_no }}</p>
-                    <p class="segment-no">{{ segment.segment_no }}</p>
-                </td>
-                <td class="source">{{ segment.source|safe }}</td>
-                <td class="target" contenteditable="true">{{ segment.target|safe }}</td>
-            </tr>
-        {% endfor %}
-        </table>
+        <div id="editor">
+            {% csrf_token %}
+            <table>
+            {% for segment in segments %}
+                <tr class="segment {% cycle 'odd' 'even' %} {{ segment.status }}" id="{{ segment.segment_no }}">
+                    <td class="details merge-selector">
+                        <p class="paragraph-no">{{ segment.paragraph_no }}</p>
+                        <p class="segment-no">{{ segment.segment_no }}</p>
+                    </td>
+                    <td class="source">{{ segment.source|safe }}</td>
+                    <td class="target" contenteditable="true">{{ segment.target|safe }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
     </main>
 </body>
 </html>
