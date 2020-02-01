@@ -13,6 +13,12 @@ a, body, button, div, form, h1, h2, h3, h4, header, input, label, li, nav, p, td
     text-decoration: none;
 }
 
+body {
+    min-height: 500px;
+    min-width: 400px;
+    overflow: hidden;
+}
+
 button {
     background-color: rgb(255, 255, 255);
     border: 1px solid #126868;
@@ -22,6 +28,12 @@ button {
     font-weight: 800;
     padding: 7px;
     transition: 0.4s;
+}
+
+button:disabled, button:disabled:hover {
+    background-color: rgb(150, 150, 150);
+    border: 1px solid rgb(75, 75, 75);
+    color: rgb(75, 75, 75);
 }
 
 button:hover {
@@ -34,19 +46,39 @@ button#generate-target-translation {
     float: right;
 }
 
+button#merge-segments {
+    display: none;
+    float: right;
+}
+
+div#editor {
+    display: flexbox;
+    grid-row: 2;
+    overflow-y: auto;
+}
+
+div#tm-hits {
+    grid-row: 1;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
 header {
     background-color: #126868;
+    height: 10vh;
     padding: 7px;
+}
+
+main {
+    display: grid;
+    grid-gap: 0;
+    grid-template-rows: 2fr 8fr;
+    height: 90vh;
 }
 
 table {
     table-layout: fixed;
     width: 100%;
-}
-
-div#tm-hits {
-    height: 150px;
-    overflow-y: scroll;
 }
 
 td.details, td.source, td.target {
@@ -56,16 +88,24 @@ td.details, td.source, td.target {
     overflow-wrap: break-word;
     padding: 4px;
     vertical-align: top;
-    width: 48%;
+    width: 47%;
 }
 
 td.details {
     text-align: right;
-    width: 4%;
+    width: 6%;
 }
 
 td.details p.paragraph-no {
     display: none;
+}
+
+td.merge-selector {
+    cursor: pointer;
+}
+
+td.merge-selector.selected {
+    background-color: #126868;
 }
 
 td.target:focus {
@@ -93,4 +133,10 @@ tag.end {
 
 tag.standalone {
     border-radius: 4px;
+}
+
+@media only screen and (max-width: 600px) {
+    td.details p {
+        font-size: 7px;
+    }
 }

@@ -1,6 +1,25 @@
 $(document).ready(function() {
     var csrf_token = $("[name=csrfmiddlewaretoken]").val();
     var file = $(document).attr('title');
+    var selected_segments = [];
+    var segment_selection = false;
+
+    $("button#merge-segments").click(function() {
+        $.post(
+            $(location).attr("href"),
+            {
+                "csrfmiddlewaretoken": csrf_token,
+                "procedure": "merge",
+                "selected_segments": selected_segments.toString()
+            },
+            function(data) {
+                location.reload()
+            }
+        ).fail(function() {
+            alert("Segments could not be merged.")
+            location.reload()
+        })
+    })
 
     $("td.source tag").click(function() {
         var target_segment = $(this).closest("tr").find("td.target");
@@ -40,6 +59,25 @@ $(document).ready(function() {
         } else {
             $(this).closest("tr").addClass("draft")
             $(this).closest("tr").removeClass("translated")
+        }
+    })
+
+    $("td.merge-selector").click(function() {
+        var segment_no = $(this).find("p.segment-no").text()
+        if (selected_segments.includes(segment_no)) {
+            selected_segments = [].concat(selected_segments.slice(0, selected_segments.indexOf(segment_no)), selected_segments.slice(selected_segments.indexOf(segment_no)+1))
+            $(this).removeClass("selected")
+        } else {
+            selected_segments.push(segment_no)
+            $(this).addClass("selected")
+        }
+        if (selected_segments.length > 1) {
+            $("button#merge-segments").css("display", "inline-block").prop("disabled", false)
+
+        } else if (selected_segments.length == 1) {
+            $("button#merge-segments").css("display", "inline-block").prop("disabled", true)
+        } else {
+            $("button#merge-segments").css("display", "none").prop("disabled", true)
         }
     })
 
