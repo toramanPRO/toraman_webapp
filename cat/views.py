@@ -12,20 +12,21 @@ from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
 from toraman.utils import html_to_segment, segment_to_html, analyse_files
 
-from .decorators import permission_required, project_access
+from .decorators import file_access, permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
-from .models import Project, TranslationMemory
+from .models import Project, ProjectFile, TranslationMemory
 # Create your views here.
 
-@project_access
-def bilingual_file(request, user_id, project_id, source_file):
+@file_access
+def bilingual_file(request, user_id, project_id, file_id):
     user_project = Project.objects.get(id=project_id)
+    user_file = ProjectFile.objects.get(id=file_id)
 
     if request.method == 'POST':
         if request.POST.get('procedure') == 'merge':
             list_of_segments = request.POST['selected_segments'].split(',')
 
-            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            bf = BilingualFile(user_file.bilingual_file_path)
             bf.merge_segments(list_of_segments)
             bf.save(user_project.get_source_dir())
 
@@ -38,7 +39,7 @@ def bilingual_file(request, user_id, project_id, source_file):
             paragraph_no = int(request.POST['paragraph_no'])
             segment_no = int(request.POST['segment_no'])
 
-            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            bf = BilingualFile(user_file.bilingual_file_path)
             segment_no_list = bf.update_segment(segment_status, copy.deepcopy(target_segment), paragraph_no, segment_no, str(request.user.id))
             bf.save(user_project.get_source_dir())
 
@@ -78,7 +79,7 @@ def bilingual_file(request, user_id, project_id, source_file):
             return render(request, 'tm_hits.html', context)
 
         else:
-            bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
+            bf = BilingualFile(user_file.bilingual_file_path)
             paragraphs = (paragraph for paragraph in bf.paragraphs)
             segments = []
             for paragraph in paragraphs:
@@ -104,7 +105,8 @@ def bilingual_file(request, user_id, project_id, source_file):
 
             context = {
 
-                'download_url': reverse('download-target-file', args=(user_id, project_id, source_file)),
+                'download_url': reverse('download-target-file', args=(user_id, project_id, file_id)),
+                'file_title': user_file.title,
                 'project_url': user_project.get_absolute_url(),
                 'segments': segments,
                 'tm': user_project.translation_memory,
@@ -113,18 +115,19 @@ def bilingual_file(request, user_id, project_id, source_file):
             return render(request, 'bilingual_file.html', context)
 
 
-@project_access
-def download_target_file(request, user_id, project_id, source_file):
+@file_access
+def download_target_file(request, user_id, project_id, file_id):
     user_project = Project.objects.get(id=project_id)
+    user_file = ProjectFile.objects.get(id=file_id)
 
-    bf = BilingualFile(os.path.join(user_project.get_source_dir(), (source_file + '.xml')))
-    bf.generate_target_translation(os.path.join(user_project.get_source_dir(), source_file),
+    bf = BilingualFile(user_file.bilingual_file_path)
+    bf.generate_target_translation(os.path.join(user_project.get_source_dir(), user_file.title),
                                     user_project.get_target_dir()
                                     )
-    target_file_path = os.path.join(user_project.get_target_dir(), source_file)
+    target_file_path = os.path.join(user_project.get_target_dir(), user_file.title)
 
     response = FileResponse(open(target_file_path, 'rb'))
-    response['Content-Disposition'] = 'attachment; filename={0}'.format(source_file)
+    response['Content-Disposition'] = 'attachment; filename={0}'.format(user_file.title)
     response['Content-Length'] = os.path.getsize(target_file_path)
 
     return response
@@ -167,8 +170,7 @@ def new_project(request):
             else:
                 user_project = form.save(commit=False)
                 user_project.translation_memory = user_translation_memory
-                user_project.user = request.user
-                user_project.source_files = ';'.join([uploaded_file.name for uploaded_file in uploaded_files])
+                user_project.created_by = request.user
                 user_project.save()
 
                 source_files_dir = user_project.get_source_dir()
@@ -176,16 +178,25 @@ def new_project(request):
 
                 time.sleep(0.5)
 
+                bf_paths = []
                 for uploaded_file in uploaded_files:
                     with open(os.path.join(source_files_dir, uploaded_file.name), 'wb+') as output_file:
                         for line in uploaded_file:
                             output_file.write(line)
+                    
+                    project_file = ProjectFile()
+                    project_file.title = uploaded_file.name
+                    project_file.source_file_path = os.path.join(source_files_dir, uploaded_file.name)
+                    project_file.project = user_project
+                    project_file.created_by = request.user
 
-                bf_paths = []
-                for source_file in user_project.source_files.split(';'):
-                    sf = SourceFile(os.path.join(source_files_dir, source_file))
+                    sf = SourceFile(os.path.join(source_files_dir, uploaded_file.name))
                     sf.write_bilingual_file(source_files_dir)
-                    bf_paths.append(os.path.join(source_files_dir, source_file + '.xml'))
+
+                    project_file.bilingual_file_path = os.path.join(source_files_dir, uploaded_file.name + '.xml')
+                    project_file.save()
+
+                    bf_paths.append(project_file.bilingual_file_path)
 
                 analysis_report = analyse_files(bf_paths,
                                                 user_project.translation_memory.get_tm_path(),
@@ -240,13 +251,13 @@ def project(request, user_id, project_id):
     context = {
         'user_is_pm': request.user.has_perm('cat.change_project'),
         'user_project': Project.objects.get(id=project_id),
-        'source_files': user_project.source_files.split(';'),
+        'source_files': ProjectFile.objects.filter(project=user_project)
     }
     if context['user_is_pm']:
         context['form'] = AssignProjectToTranslatorForm(request.POST or None)
 
     if request.method == 'POST':
-        if not context['user_is_pm'] and not user_project.user == request.user:
+        if not context['user_is_pm'] and not user_project.created_by == request.user:
             response = HttpResponse('You aren\'t authorised to modify this project.')
             response.status_code = 403
 
@@ -255,8 +266,13 @@ def project(request, user_id, project_id):
         if context['form'].is_valid():
             try:
                 translator = User.objects.get(username=context['form'].cleaned_data['translator'])
-                user_project.translator = translator
-                user_project.save()
+                for user_file_id in context['form'].cleaned_data['file_ids'].split(';'):
+                    try:
+                        user_file = ProjectFile.objects.get(id=int(user_file_id), project=user_project)
+                        user_file.translator = translator
+                        user_file.save()
+                    except ProjectFile.DoesNotExist:
+                        context['error'] = 'File #{0} does not exist.'.format(user_file_id)
             except User.DoesNotExist:
                 context['error'] = 'User does not exist.'
 

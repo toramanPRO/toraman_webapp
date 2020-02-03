@@ -139,6 +139,15 @@ select {
     padding: 4px;
     width: 200px;
 }
+table#assigned td {
+    text-align: center;
+}
+table#assignment-form td {
+    text-align: left;
+}
+table#assignment-form th {
+    text-align: right;
+}
 table {
     border-collapse: collapse;
     display: table;
