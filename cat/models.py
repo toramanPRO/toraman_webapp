@@ -96,7 +96,6 @@ class Project(models.Model):
     title = models.CharField(max_length=60)
     source_language = models.CharField(max_length=2, choices=LANGUAGE_CODES)
     target_language = models.CharField(max_length=2, choices=LANGUAGE_CODES)
-    source_files = models.CharField(max_length=500, blank=True, null=True)
     analysis_report = models.TextField()
     translation_memory = models.ForeignKey(TranslationMemory, blank=True, null=True, on_delete=models.SET_NULL)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='project_owner')
