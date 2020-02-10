@@ -26,8 +26,8 @@
             <ul id="source-files">
             {% for source_file in source_files %}
                 <li>
-                    <a href="{% url 'bilingual-file'  user_project.user.id user_project.id source_file %}">
-                    {{ source_file }}
+                    <a href="{% url 'bilingual-file'  user_project.created_by.id user_project.id source_file.id %}">
+                    {{ source_file.title }}
                     </a>
                 </li>
             {% endfor %}
@@ -54,20 +54,40 @@
         </div>
         {% if user_is_pm %}
         <div id="project-pm-settings">
-            {% if user_project.translator %}
-            <p>This project is currently assigned to {{ user_project.translator.username }}.</p>
-            {% else %}
-            <p>This project hasn't been assigned to a translator yet. Use this form to do so.</p>
+            <table id="assigned">
+                <tr>
+                    <th>File Name</th>
+                    <th>File Index</th>
+                    <th>Translator</th>
+                </tr>
+                {% for user_file in source_files %}
+                <tr>
+                    <td>{{ user_file.title }}</td>
+                    <td>{{ user_file.id }}</td>
+                    <td>{{ user_file.translator }}</td>
+                </tr>
+                {% endfor %}
+            </table>
             <form method="POST">
             {% csrf_token %}
+                <table id="assignment-form">
                 {% if error %}
-                <p>{{ error }}</p>
+                    <tr><td colspan="2">{{ error }}</td></tr>
                 {% endif %}
-                {{ form.translator }}
-                <br>
-                <input type="submit" value="Assign"/>
+                    <tr>
+                        <th>{{ form.file_ids.label }}</th>
+                        <td>{{ form.file_ids }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ form.translator.label }}</th>
+                        <td>{{ form.translator }}</td>
+                    </tr>
+                    <tr>
+                        <th><input type="submit" value="Assign"/></th>
+                        <td></td>
+                    </tr>
+                </table>
             </form>
-            {% endif %}
         </div>
         {% endif %}
     </main>

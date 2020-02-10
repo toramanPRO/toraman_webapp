@@ -139,6 +139,15 @@ select {
     padding: 4px;
     width: 200px;
 }
+table#assigned td {
+    text-align: center;
+}
+table#assignment-form td {
+    text-align: left;
+}
+table#assignment-form th {
+    text-align: right;
+}
 table {
     border-collapse: collapse;
     display: table;
@@ -149,9 +158,11 @@ table {
 }
 table.form td, table#shortcuts td {
     text-align: left;
+    word-break: keep-all;
 }
 table.form th, table#shortcuts th {
     text-align: right;
+    word-break: keep-all;
 }
 table.form th.form-title, table#shortcuts th.title {
     text-align: left;

@@ -2,6 +2,9 @@ from django import forms
 from .models import Project, TranslationMemory
 
 class AssignProjectToTranslatorForm(forms.Form):
+    file_ids = forms.CharField(label='File Indices',
+                                widget=forms.TextInput(attrs={'placeholder': '1;2;3;4'}),
+                                required=True)
     translator = forms.CharField(label='Translator\'s Username',
                                 widget=forms.TextInput(attrs={'placeholder': 'Translator\'s Username'}),
                                 required=True)

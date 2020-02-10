@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
-from cat.models import Project, TranslationMemory
+from cat.models import Project, ProjectFile, TranslationMemory
 
 from .forms import PasswordResetForm, SetPasswordForm, UserForm
 from .models import PasswordResetToken
@@ -150,10 +150,14 @@ def set_password(request, token):
 
 def user_dashboard(request, username):
     if username == request.user.username:
+        user_projects = []
+        for user_file in ProjectFile.objects.filter(Q(created_by=request.user)|Q(translator=request.user)).order_by('-id'):
+            if user_file.project not in user_projects:
+                user_projects.append(user_file.project)
         context = {
             'user_can_add_projects': request.user.has_perm('cat.add_project'),
             'user_can_add_tms': request.user.has_perm('cat.add_translationmemory'),
-            'user_projects': Project.objects.filter(Q(user=request.user)|Q(translator=request.user)).order_by('-id'),
+            'user_projects': user_projects,
             'user_tms': TranslationMemory.objects.filter(user=request.user).order_by('-id'),
         }
         response = render(request, 'user-dashboard.html', context)

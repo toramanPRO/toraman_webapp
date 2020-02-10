@@ -61,6 +61,7 @@ div#tm-hits {
     grid-row: 1;
     max-height: 100%;
     overflow-y: auto;
+    user-select: none;
 }
 
 header {
@@ -114,9 +115,11 @@ td.target:focus {
 
 tag {
     background-color: #126868;
+    color: #FFF;
     cursor: pointer;
     margin: 0 1px;
     padding: 0 8px;
+    user-select: none;
 }
 
 tag.beginning {

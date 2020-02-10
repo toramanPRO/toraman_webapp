@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
-from cat.models import Project, TranslationMemory
+from cat.models import Project, ProjectFile, TranslationMemory
 
 import os
 
@@ -14,6 +14,22 @@ def pre_delete_project_cleanup(sender, instance, **kwargs):
         for filename in filenames:
             os.remove(os.path.join(dirpath, filename))
         os.rmdir(dirpath)
+
+@receiver(pre_delete, sender=ProjectFile)
+def pre_delete_project_file_cleanup(sender, instance, **kwargs):
+    user_file = instance
+
+    if os.path.exists(user_file.source_file_path):
+        os.remove(user_file.source_file_path)
+
+    if os.path.exists(user_file.bilingual_file_path):
+        os.remove(user_file.bilingual_file_path)
+
+    target_file_path = os.path.join(user_file.project.get_target_dir(),
+                                    user_file.title)
+
+    if os.path.exists(target_file_path):
+        os.remove(target_file_path)
 
 @receiver(pre_delete, sender=TranslationMemory)
 def pre_delete_tm_cleanup(sender, instance, **kwargs):
