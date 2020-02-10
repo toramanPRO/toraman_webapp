@@ -61,6 +61,7 @@ div#tm-hits {
     grid-row: 1;
     max-height: 100%;
     overflow-y: auto;
+    user-select: none;
 }
 
 header {
@@ -117,6 +118,7 @@ tag {
     cursor: pointer;
     margin: 0 1px;
     padding: 0 8px;
+    user-select: none;
 }
 
 tag.beginning {
