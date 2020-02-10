@@ -50,6 +50,14 @@ $(document).ready(function() {
                     || e.key == "z"
                     || e.key == "ArrowLeft"
                     || e.key == "ArrowRight") {
+            } else if (e.key == "1"
+                    || e.key == "2"
+                    || e.key == "3"
+                    || e.key == "4"
+                    || e.key == "5") {
+                e.preventDefault()
+                var hit_html = $($('table#tm-hits').find("tr")[parseInt(e.key)-1]).find("td.target").html()
+                $(this).html(hit_html)
             } else {
                 e.preventDefault()
             }
