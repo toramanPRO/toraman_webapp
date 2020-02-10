@@ -158,9 +158,11 @@ table {
 }
 table.form td, table#shortcuts td {
     text-align: left;
+    word-break: keep-all;
 }
 table.form th, table#shortcuts th {
     text-align: right;
+    word-break: keep-all;
 }
 table.form th.form-title, table#shortcuts th.title {
     text-align: left;
