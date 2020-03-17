@@ -3,7 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
-import copy, json, os, re, time
+import copy
+import json
+import os
+import re
+import time
 
 from html import escape
 from lxml import etree
@@ -183,7 +187,7 @@ def new_project(request):
                     with open(os.path.join(source_files_dir, uploaded_file.name), 'wb+') as output_file:
                         for line in uploaded_file:
                             output_file.write(line)
-                    
+
                     project_file = ProjectFile()
                     project_file.title = uploaded_file.name
                     project_file.source_file_path = os.path.join(source_files_dir, uploaded_file.name)
