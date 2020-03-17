@@ -9,6 +9,9 @@ head {
 body {
     min-width: 400px;
 }
+body.preload * {
+    transition: none !important;
+}
 a {
     cursor: pointer;
 }

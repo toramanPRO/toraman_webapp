@@ -8,11 +8,13 @@
         {% endblock %}
     </title>
     <link rel="stylesheet" type="text/css" href="{% static 'www/main.css' %}">
+    <script type="text/javascript" src="{% static 'jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'remove_preload_class.js' %}"></script>
     {% block js %}
     {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
+<body class="preload">
     <header>
         <nav>
             <h4>

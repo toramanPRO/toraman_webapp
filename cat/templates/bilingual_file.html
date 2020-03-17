@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <title>{{ file_title }}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'cat/bilingual_file.css' %}">
-    <script type="text/javascript" src="{% static 'jquery-3.4.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jquery-3.4.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'cat/bilingual_file.js' %}"></script>
+    <script type="text/javascript" src="{% static 'remove_preload_class.js' %}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
+<body class="preload">
     <header>
         <a href="{{ project_url }}"><button id="back">Back</button></a>
         <a href="{{ download_url }}"><button id="generate-target-translation">Download Translation</button></a>
