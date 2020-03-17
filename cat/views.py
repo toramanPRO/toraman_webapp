@@ -14,7 +14,7 @@ from lxml import etree
 
 from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
-from toraman.utils import html_to_segment, segment_to_html, analyse_files
+from toraman.utils import analyse_files, html_to_segment, segment_to_html, supported_file_formats
 
 from .decorators import file_access, permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
@@ -151,7 +151,7 @@ def new_project(request):
             uploaded_files = request.FILES.getlist('source_files')
 
             for uploaded_file in uploaded_files:
-                if not uploaded_file.name.lower().endswith(('.docx', '.odp', '.ods', '.odt')):
+                if not uploaded_file.name.lower().endswith(supported_file_formats):
                     context['errors'].append('File format of "{0}" is not supported.'.format(uploaded_file.name))
 
             user_tm_id = form.cleaned_data['translation_memory']
