@@ -3,14 +3,18 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 
-import copy, json, os, re, time
+import copy
+import json
+import os
+import re
+import time
 
 from html import escape
 from lxml import etree
 
 from toraman import BilingualFile, nsmap, SourceFile
 from toraman import TranslationMemory as TM
-from toraman.utils import html_to_segment, segment_to_html, analyse_files
+from toraman.utils import analyse_files, html_to_segment, segment_to_html, supported_file_formats
 
 from .decorators import file_access, permission_required, project_access
 from .forms import AssignProjectToTranslatorForm, ProjectForm, TranslationMemoryForm
@@ -147,7 +151,7 @@ def new_project(request):
             uploaded_files = request.FILES.getlist('source_files')
 
             for uploaded_file in uploaded_files:
-                if not uploaded_file.name.lower().endswith(('.docx', '.odp', '.ods', '.odt')):
+                if not uploaded_file.name.lower().endswith(supported_file_formats):
                     context['errors'].append('File format of "{0}" is not supported.'.format(uploaded_file.name))
 
             user_tm_id = form.cleaned_data['translation_memory']
@@ -183,7 +187,7 @@ def new_project(request):
                     with open(os.path.join(source_files_dir, uploaded_file.name), 'wb+') as output_file:
                         for line in uploaded_file:
                             output_file.write(line)
-                    
+
                     project_file = ProjectFile()
                     project_file.title = uploaded_file.name
                     project_file.source_file_path = os.path.join(source_files_dir, uploaded_file.name)

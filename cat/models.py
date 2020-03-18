@@ -3,7 +3,8 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
-import json, os
+import json
+import os
 # Create your models here.
 
 LANGUAGE_CODES = (('aa', 'Afar'), ('ab', 'Abkhazian'), ('ae', 'Avestan'), ('af', 'Afrikaans'),

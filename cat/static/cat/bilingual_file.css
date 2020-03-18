@@ -12,76 +12,67 @@ a, body, button, div, form, h1, h2, h3, h4, header, input, label, li, nav, p, td
     padding: 0;
     text-decoration: none;
 }
-
 body {
     min-height: 500px;
     min-width: 400px;
     overflow: hidden;
 }
-
+body.preload * {
+    transition: none !important;
+}
 button {
     background-color: rgb(255, 255, 255);
     border: 1px solid #126868;
     border-radius: 5px;
     color: #126868;
     cursor: pointer;
-    font-weight: 800;
+    font-weight: 600;
     padding: 7px;
     transition: 0.4s;
 }
-
 button:disabled, button:disabled:hover {
     background-color: rgb(150, 150, 150);
     border: 1px solid rgb(75, 75, 75);
     color: rgb(75, 75, 75);
 }
-
 button:hover {
     background-color: #126868;
     border: 1px solid rgb(255, 255, 255);
     color: rgb(255, 255, 255);
 }
-
 button#generate-target-translation {
     float: right;
 }
-
 button#merge-segments {
     display: none;
     float: right;
 }
-
 div#editor {
     display: flexbox;
     grid-row: 2;
     overflow-y: auto;
 }
-
 div#tm-hits {
     grid-row: 1;
     max-height: 100%;
     overflow-y: auto;
     user-select: none;
 }
-
 header {
     background-color: #126868;
     height: 10vh;
     padding: 7px;
 }
-
 main {
     display: grid;
     grid-gap: 0;
     grid-template-rows: 2fr 8fr;
     height: 90vh;
 }
-
 table {
     table-layout: fixed;
     width: 100%;
 }
-
 td.details, td.source, td.target {
     border: 1px solid #ccc;
     height: auto;
@@ -91,12 +82,10 @@ td.details, td.source, td.target {
     vertical-align: top;
     width: 47%;
 }
-
 td.details {
     text-align: right;
     width: 6%;
 }
-
 td.details p.paragraph-no {
     display: none;
 }
@@ -104,15 +93,12 @@ td.details p.paragraph-no {
 td.merge-selector {
     cursor: pointer;
 }
-
 td.merge-selector.selected {
     background-color: #126868;
 }
-
 td.target:focus {
     border: 1px solid #126868;
 }
-
 tag {
     background-color: #126868;
     color: #FFF;
@@ -121,23 +107,19 @@ tag {
     padding: 0 8px;
     user-select: none;
 }
-
 tag.beginning {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     padding: 0 4px 0 8px;
 }
-
 tag.end {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 0 8px 0 4px;
 }
-
 tag.standalone {
     border-radius: 4px;
 }
-
 @media only screen and (max-width: 600px) {
     td.details p {
         font-size: 7px;
