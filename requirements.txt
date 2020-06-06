@@ -1,2 +1,2 @@
-Django==2.2.11
+Django==2.2.13
 toraman==0.4.1
